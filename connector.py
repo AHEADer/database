@@ -15,6 +15,17 @@ def index():
     return template('template')
 
 
+@route('/book/<id>')
+def index(id):
+    single = mariadb_connection.cursor(buffered=True)
+    single.execute("SELECT * FROM library.book WHERE id=%s", (id, ))
+    book_info = []
+    for i in single:
+        book_info.append(i)
+    print(book_info)
+    return template('single', bki = book_info)
+
+
 @get('/static/css/<filename:re:.*\.css>')
 def send_css(filename):
     print(filename)
@@ -46,8 +57,8 @@ def send_image(filename):
 def index():
     request.POST.decode('utf-8')
     arg = request.POST.getunicode('q')
-    chb = request.POST.getunicode('games')
-    print(chb)
+
+    print(request.POST.getall('chb'))
     # the type of arg is str
     rt_lsit = []
     if arg.isdigit():
@@ -63,33 +74,38 @@ def index():
     # print(str(arg, encoding='utf-8'))
     ratio = 73+len(arg)/2
 
-    cursor.execute("SELECT title, author, b_type, publish_date, press, press_addr, pages, hot FROM"
+    cursor.execute("SELECT title, author, b_type, publish_date, press, press_addr, pages, hot, id FROM"
                    " library.book WHERE levenshtein_ratio(title, %s) >= %s", (arg, ratio))
 
     for i in cursor:
-        rt_lsit.append(frozenset(i))
-    print(rt_lsit)
-    cursor.execute("SELECT title, author, b_type, publish_date, press, press_addr, pages, hot FROM"
+        rt_lsit.append(i)
+
+    cursor.execute("SELECT title, author, b_type, publish_date, press, press_addr, pages, hot, id FROM"
                    " library.book WHERE levenshtein_ratio(author, %s) >= %s", (arg, ratio))
     for i in cursor:
-        rt_lsit.append(frozenset(i))
+        rt_lsit.append(i)
 
-    cursor.execute("SELECT title, author, b_type, publish_date, press, press_addr, pages, hot FROM"
+    cursor.execute("SELECT title, author, b_type, publish_date, press, press_addr, pages, hot, id FROM"
                    " library.book WHERE levenshtein_ratio(press, %s) >= %s", (arg, ratio))
     for i in cursor:
-        rt_lsit.append(frozenset(i))
+        rt_lsit.append(i)
 
-    cursor.execute("SELECT title, author, b_type, publish_date, press, press_addr, pages, hot FROM"
+    cursor.execute("SELECT title, author, b_type, publish_date, press, press_addr, pages, hot, id FROM"
                    " library.book WHERE levenshtein_ratio(b_type, %s) >= %s", (arg, 80))
     for i in cursor:
-        rt_lsit.append(frozenset(i))
-    # rt_lsit = set(rt_lsit)
-    print(rt_lsit)
+        rt_lsit.append(i)
+    rt_lsit = set(rt_lsit)
+    rt_lsit = list(rt_lsit)
+
+    rt_fin = []
+    for i in rt_lsit:
+        rt_fin.append(list(i))
+    print(rt_fin)
     cursor.close()
 
 
 
     # return template('template', name=name)
-    return template('sch_rst')
+    return template('sch_rst', b_list = rt_fin)
 
 run(host='localhost', port=8080)

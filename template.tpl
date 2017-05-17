@@ -116,9 +116,8 @@
                 <a href="/language" title="Languages">Languages</a>
             </span>
         </p>
-        <p id="chb">
-        
-            <label title="文学" accesskey="a"><input id="all" onclick="setAll();" type="checkbox" checked>所有</label>
+        <p id="chb" name="chb">
+            <label title="文学" accesskey="a"><input id="all" onclick="setAll();" type="checkbox" value = "所有" checked>所有</label>
             <label title="经济" accesskey="x"><input name="audio" id="audio" onclick="rmAll();" type="checkbox">文学</label>
             <label title="经济" accesskey="q"><input name="audio" id="audio" onclick="rmAll();" type="checkbox">经济</label>
             <label title="艺术" accesskey="w"><input name="video" id="video" onclick="rmAll();" type="checkbox">艺术</label>

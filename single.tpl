@@ -134,44 +134,98 @@
         </form>
     </div><!-- // div:header -->
 
-    <h2><span>Search results: linux</span>&nbsp;Displaying hits from 0 to 30 (approx 79 found)</h2>
+    <h2><span>详细信息</span>&nbsp;</h2>
+% for item in bki:
+<div id="content">
 
-<div id="SearchResults"><div id="content">
-	
-    <div id="main-content">
-<table id="searchResult">
-	<thead id="tableHead">
-		<tr class="header">
-			<th><title="Order by Type">类型</a></th>
-			<th><div class="sortby"><a href="/search/linux/0/1/200" title="Order by Name">书籍</a>
-			<th><abbr title="Seeders"><a href="/search/linux/0/8/200" title="Order by Seeders">作者</a></abbr></th>
-			<th><abbr title="Leechers"><a href="/search/linux/0/9/200" title="Order by Leechers">热度</a></abbr></th>
-		</tr>
-	</thead>
+			<div id="sky-right">
+				 <iframe src="//thepiratebay.org/static/ads/exo_na/sky2.html" width="160" height="600" frameborder="0" scrolling="no"></iframe>
+			</div>
+	<div id="main-content">
 
-	% for item in b_list:
-    <tr>
-		<td class="vertTh">
-			<center>
-				<a href="/browse/200" title="More from this category">{{item[2]}}</a><br />
-			</center>
-		</td>
-		<td>
-<div class="detName">			<a href="/book/{{item[8]}}" class="detLink" title="{{item[0]}}">{{item[0]}}</a>
-</div>
-<a href="#"></a><a href="/user/y7"></a>
-			<font class="detDesc">Published {{item[3]}}, 出版社 {{item[4]}}&nbsp;页数<a class="detDesc" href="/user/y7/" title="Browse y7">{{item[6]}}</a></font>
-		</td>
-		<td align="right">{{item[1]}}</td>
-		<td align="right">{{item[7]}}</td>
-</tr>
-	% end
+			 <iframe src="//thepiratebay.org/static/ads/exo_na/center.html" id="sky-center" width="728" height="90" frameborder="0" scrolling="no"></iframe>
+		<div>
+<div id="detailsouterframe">
+<div id="response"></div>
+<div id="message"></div>
+<div id="detailsframe">
+<div id="title">
+        {{item[1]}}</div>
 
-</table>
-</div>
-<div align="center">1&nbsp;<a href="/search/linux/1/7/200/">2</a>&nbsp;<a href="/search/linux/2/7/200/">3</a>&nbsp;<a href="/search/linux/1/7/200/"><img src="/static/img/next.gif" border="0" alt="Next"/></a>&nbsp;
-</div>
-	</div></div></div><!-- //div:content -->
+    <div id='details'>
+        <dl class='col1'>
+            <dt>类型:</dt>
+            <dd><a href="/browse/601" title="More from this category">{{item[8]}}</a></dd>
+
+        <dt>剩余书本:</dt>
+            <dd><a href="javascript:void(0);" title="Files" onclick="if( filelist &lt; 1 ) { new Ajax.Updater('filelistContainer', '/ajax_details_filelist.php', { method: 'get', parameters: 'id=14645977' } ); filelist=1; }; toggleFilelist(); return false;">{{item[7] - item[11]}}</a></dd>
+
+            <dt>出版社:</dt>
+            <dd>{{item[4]}}</dd>
+
+
+                                        <dt>出版社地址:</dt>
+                        <dd>{{item[5]}}</dd>
+        </dl>
+        <dl class='col2'>
+            <dt>出版时间:</dt>
+            <dd>{{item[3]}}</dd>
+            <dt>作者:</dt>
+            <dd><a href="/author/{{item[2]}}/" title="{{item[2]}}">{{item[2]}}</a>&nbsp;</dd>
+            <dt>热度:</dt>
+            <dd>{{item[10]}}</dd>
+
+            <dt>页数:</dt>
+            <dd>{{item[6]}}</dd>
+
+            <dt>Comments</dt>
+            <dd><span id='NumComments'>0</span>
+                &nbsp;            </dd>
+
+            <br />
+            <dt>Info Hash:</dt><dd></dd>
+            FC4967B830B8285503AE6D93BA8BE4C3179E354F        </dl>
+            <div id="CommentDiv" style="display:none;">
+        <form method="post" id="commentsform" name="commentsform" onsubmit="new Ajax.Updater('NumComments', '/ajax_post_comment.php', {evalScripts:true, asynchronous:true, parameters:Form.serialize(this)}); return false;" action="/ajax_post_comment.php">
+            <p class="info">
+                <textarea name="add_comment" id="add_comment" rows="8" cols="50"></textarea><br/>
+                <input type="hidden" name="id" value="14645977"/>
+                <input type="submit" value="Submit" /><input type="button" value="Hide" onclick="document.getElementById('CommentDiv').style.display = 'none'" />
+            </p>
+        </form>
+    </div>
+    <br/>
+    <br/>
+    <div id="social">
+    </div>
+    <br /><br />    <div>
+        <div class="download">
+  		          <a style="background-image: url('//thepiratebay.org/static/img/icons/icon-magnet.gif');" href="magnet:?xt=urn:btih:fc4967b830b8285503ae6d93ba8be4c3179e354f&dn=Kali+Linux+-Wireless+Penetration+Testing+Beginner%27s+Guide+%282015%29&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Fzer0day.ch%3A1337&tr=udp%3A%2F%2Fopen.demonii.com%3A1337&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Fexodus.desync.com%3A6969" title="Get this torrent">&nbsp;Get this torrent</a>
+
+        </div>
+        <div style="clear:both;">(Problems with magnets links are fixed by upgrading your <a href="http://www.bitlord.com" target="_blank">torrent client</a>!)</div>
+        <div class="nfo">
+            <pre>{{item[9]}}
+</pre>
+        </div>
+        <br/>
+        <div class="download">
+            <a style="background-image: url('//thepiratebay.org/static/img/icons/icon-magnet.gif');" href="magnet:?xt=urn:btih:fc4967b830b8285503ae6d93ba8be4c3179e354f&dn=Kali+Linux+-Wireless+Penetration+Testing+Beginner%27s+Guide+%282015%29&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Fzer0day.ch%3A1337&tr=udp%3A%2F%2Fopen.demonii.com%3A1337&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Fexodus.desync.com%3A6969" title="Get this torrent">&nbsp;Get this torrent</a>
+              </div>
+            <div id="filelistContainer" style="display:none;">
+                <a id="show"></a>
+            </div>
+            <div id="comments"></div>            </div>
+        </div>
+    </div>
+
+			<div class="ads" id="sky-banner">
+				 <iframe src="//thepiratebay.org/static/ads/exo_na/sky1.html" width="120" height="600" frameborder="0" scrolling="no"></iframe>
+			</div>
+			<script type="text/javascript" src="//thepiratebay.org/static/ads/ad-scroll.js"></script>
+	</div>
+</div><!-- //div:content -->
+% end
 
 	<div id="foot" style="text-align:center;margin-top:1em;">
 				<p>
