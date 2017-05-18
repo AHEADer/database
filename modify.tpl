@@ -133,44 +133,64 @@
             <input type="hidden" name="orderby" value="99" />
         </form>
     </div><!-- // div:header -->
-
     <h2><span>详细信息</span>&nbsp;</h2>
-% for item in bki:
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    % for item in bki:
+<form name="modify" method="post" action="/modify/{{item[0]}}">
 <div id="content">
 	<div id="main-content">
-
+		<div>
 <div id="detailsouterframe">
 <div id="response"></div>
 <div id="message"></div>
 <div id="detailsframe">
 <div id="title">
-        {{item[1]}}</div>
+<input name="title" value="{{item[1]}}" autofocus required style="width:300px">
+</div>
 
     <div id='details'>
         <dl class='col1'>
             <dt>类型:</dt>
-            <dd><a href="/browse/601" title="More from this category">{{item[8]}}</a></dd>
+            <dd><input name="b_type" value="{{item[8]}}" autofocus required style="width:100px"></dd>
 
-        <dt>剩余书本:</dt>
-            <dd><a href="javascript:void(0);" title="Files" onclick="if( filelist &lt; 1 ) { new Ajax.Updater('filelistContainer', '/ajax_details_filelist.php', { method: 'get', parameters: 'id=14645977' } ); filelist=1; }; toggleFilelist(); return false;">{{item[7] - item[11]}}</a></dd>
+        <dt>书本总量:</dt>
+            <dd><input name="amount" value="{{item[7]}}" autofocus required style="width:100px"></a></dd>
 
             <dt>出版社:</dt>
-            <dd>{{item[4]}}</dd>
+            <dd><input name="press" value="{{item[4]}}" autofocus required style="width:100px"></dd>
 
 
-                                        <dt>出版社地址:</dt>
-                        <dd>{{item[5]}}</dd>
+            <dt>出版社地址:</dt>
+            <dd><input name="press_addr" value="{{item[5]}}" autofocus required style="width:100px"></dd>
         </dl>
         <dl class='col2'>
             <dt>出版时间:</dt>
-            <dd>{{item[3]}}</dd>
+            <dd><input name="publish_date" value="{{item[3]}}" autofocus required style="width:150px"></dd>
             <dt>作者:</dt>
-            <dd><a href="/author/{{item[2]}}/" title="{{item[2]}}">{{item[2]}}</a>&nbsp;</dd>
+            <dd><input name="author" value="{{item[2]}}" autofocus required style="width:150px"></dd>
             <dt>热度:</dt>
-            <dd>{{item[10]}}</dd>
+            <dd><input name="hot" value="{{item[10]}}" autofocus required style="width:150px"></dd>
 
             <dt>页数:</dt>
-            <dd>{{item[6]}}</dd>
+            <dd><input name="pages" value="{{item[6]}}" autofocus required style="width:150px"></dd>
 
             <dt>Comments</dt>
             <dd><span id='NumComments'>0</span>
@@ -179,35 +199,17 @@
             <br />
             <dt>Info Hash:</dt><dd></dd>
             FC4967B830B8285503AE6D93BA8BE4C3179E354F        </dl>
-            <div id="CommentDiv" style="display:none;">
-        <form method="post" id="commentsform" name="commentsform" onsubmit="new Ajax.Updater('NumComments', '/ajax_post_comment.php', {evalScripts:true, asynchronous:true, parameters:Form.serialize(this)}); return false;" action="/ajax_post_comment.php">
-            <p class="info">
-                <textarea name="add_comment" id="add_comment" rows="8" cols="50"></textarea><br/>
-                <input type="hidden" name="id" value="14645977"/>
-                <input type="submit" value="Submit" /><input type="button" value="Hide" onclick="document.getElementById('CommentDiv').style.display = 'none'" />
-            </p>
-        </form>
-    </div>
     <br/>
     <br/>
     <div id="social">
     </div>
     <br /><br />    <div>
-        <div class="download">
-  		          <a href="/modify/{{item[0]}}" title="修改">修改</a>
-
-        </div>
-        <div style="clear:both;">如果您对这个书本信息有疑问，可以修改</div>
         <div class="nfo">
-            <pre>{{item[9]}}
-</pre>
+        <textarea name="about" autofocus required style="height:120px; width:595px">{{item[9]}}</textarea>
         </div>
         <br/>
-        <div class="download">
-            <a href="/delete/{{item[0]}}" title="删除">删除</a>
-              </div>
-            <div id="filelistContainer" style="display:none;">
-                <a id="show"></a>
+        <div class="download" style="text-align:center">
+            <input value="确定" type="submit" class="submitbutton" >
             </div>
             <div id="comments"></div>            </div>
         </div>
@@ -219,7 +221,34 @@
 			<script type="text/javascript" src="//thepiratebay.org/static/ads/ad-scroll.js"></script>
 	</div>
 </div><!-- //div:content -->
+</form>
 % end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	<div id="foot" style="text-align:center;margin-top:1em;">
 				<p>

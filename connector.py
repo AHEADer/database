@@ -23,8 +23,38 @@ def index(id):
     for i in single:
         book_info.append(i)
     print(book_info)
+    # print(book_info[7], book_info[11])
     return template('single', bki = book_info)
 
+@get('/modify/<id>')
+def index(id):
+    single = mariadb_connection.cursor(buffered=True)
+    single.execute("SELECT * FROM library.book WHERE id=%s", (id, ))
+    book_info = []
+    for i in single:
+        book_info.append(i)
+    print(book_info)
+    # print(book_info[7], book_info[11])
+    return template('modify', bki = book_info)
+
+@post('/modify/<id>')
+def index(id):
+    single = mariadb_connection.cursor(buffered=True)
+    about = request.POST.getunicode('about')
+    title = request.POST.getunicode('title')
+    author = request.POST.getunicode('author')
+    publish_date = request.POST.getunicode('publish_date')
+    press = request.POST.getunicode('press')
+    pages = request.POST.getunicode('pages')
+    amount = request.POST.getunicode('amount')
+    b_type = request.POST.getunicode('b_type')
+    hot = request.POST.getunicode('hot')
+    press_addr = request.POST.getunicode('press_addr')
+    update = "UPDATE library.book SET about=%s, title=%s, author=%s, publish_date = %s, \
+    press = %s, pages = %s, amount = %s, b_type = %s, hot = %s, press_addr = %s WHERE id = %s"
+    args = (about, title, author, publish_date, press, pages, amount, b_type, hot, press_addr, id)
+    single.execute(update, args)
+    return "<p>Test<p>"
 
 @get('/static/css/<filename:re:.*\.css>')
 def send_css(filename):
@@ -72,7 +102,7 @@ def index():
     print(arg)
 
     # print(str(arg, encoding='utf-8'))
-    ratio = 73+len(arg)/2
+    ratio = 70+len(arg)/2
 
     cursor.execute("SELECT title, author, b_type, publish_date, press, press_addr, pages, hot, id FROM"
                    " library.book WHERE levenshtein_ratio(title, %s) >= %s", (arg, ratio))
