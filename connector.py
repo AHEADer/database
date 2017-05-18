@@ -37,6 +37,7 @@ def index(id):
     # print(book_info[7], book_info[11])
     return template('modify', bki = book_info)
 
+
 @post('/modify/<id>')
 def index(id):
     single = mariadb_connection.cursor(buffered=True)
@@ -54,7 +55,61 @@ def index(id):
     press = %s, pages = %s, amount = %s, b_type = %s, hot = %s, press_addr = %s WHERE id = %s"
     args = (about, title, author, publish_date, press, pages, amount, b_type, hot, press_addr, id)
     single.execute(update, args)
-    return "<p>Test<p>"
+    mariadb_connection.commit()
+    return redirect('/book/'+id)
+
+
+@get('/add')
+def index():
+    return template('add')
+
+
+@post('/add')
+def index():
+    about = request.POST.getunicode('about')
+    title = request.POST.getunicode('title')
+    author = request.POST.getunicode('author')
+    publish_date = request.POST.getunicode('publish_date')
+    press = request.POST.getunicode('press')
+    pages = request.POST.getunicode('pages')
+    amount = request.POST.getunicode('amount')
+    b_type = request.POST.getunicode('b_type')
+    hot = request.POST.getunicode('hot')
+    press_addr = request.POST.getunicode('press_addr')
+    update = "INSERT INTO library.book (about, title, author, publish_date, \
+    press, pages, amount, b_type, hot, press_addr) VALUES (%s, %s, %s, %s, \
+    %s, %s, %s, %s, %s, %s)"
+    args = (about, title, author, publish_date, press, pages, amount, b_type, hot, press_addr)
+    
+    try:
+        single = mariadb_connection.cursor(buffered=True)
+        single.execute(update, args)
+        mariadb_connection.commit()
+    except mysql.connector.Error as err:
+        return "<h2>Oop! Sth wrong!</h2>"
+    
+    try:
+        single = mariadb_connection.cursor(buffered=True)
+        single.execute("SELECT last_insert_id()")
+    except mysql.connector.Error as err:
+        return "<h2>Oop! Sth wrong!</h2>"
+    
+    id = ()
+    for i in single:
+        id = i
+    print(id[0])
+    return redirect('/book/'+str(id[0]))
+
+
+@get('/delete/<id>')
+def index(id):
+    try:
+        single = mariadb_connection.cursor(buffered=True)
+        single.execute("DELETE FROM library.book WHERE id=%s", (id, ))
+    except mysql.connector.Error as err:
+        return "<h2>Oop! Sth wrong!</h2>"
+    return redirect('/')
+
 
 @get('/static/css/<filename:re:.*\.css>')
 def send_css(filename):
@@ -93,10 +148,10 @@ def index():
     rt_lsit = []
     if arg.isdigit():
         cursor = mariadb_connection.cursor(buffered=True)
-        cursor.execute("SELECT title, author, b_type, publish_date, press, press_addr, pages, hot  FROM library.book WHERE id=%s", (arg, ))
+        cursor.execute("SELECT title, author, b_type, publish_date, press, press_addr, pages, hot, id FROM library.book WHERE id=%s", (arg, ))
         # rt_list.append(cursor)
         for i in cursor:
-            rt_lsit.append(frozenset(i))
+            rt_lsit.append(i)
 
     cursor = mariadb_connection.cursor(buffered = True)
     print(arg)
@@ -121,7 +176,7 @@ def index():
         rt_lsit.append(i)
 
     cursor.execute("SELECT title, author, b_type, publish_date, press, press_addr, pages, hot, id FROM"
-                   " library.book WHERE levenshtein_ratio(b_type, %s) >= %s", (arg, 80))
+                   " library.book WHERE levenshtein_ratio(b_type, %s) >= %s", (arg, 85))
     for i in cursor:
         rt_lsit.append(i)
     rt_lsit = set(rt_lsit)
@@ -136,6 +191,6 @@ def index():
 
 
     # return template('template', name=name)
-    return template('sch_rst', b_list = rt_fin)
+    return template('sch_rst', b_list = rt_fin, sch_name = arg)
 
 run(host='localhost', port=8080)

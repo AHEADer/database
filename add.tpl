@@ -54,12 +54,12 @@
 <body>
     <div id="header">
 
-        <form method="post" id="q" action="/s/search">
+        <form method="get" id="q" action="/s/">
             <a href="/" class="img"><img src="/static/img/out.png" id="TPBlogo" alt="The Pirate Bay" /></a>
             <b><a href="/" title="Search Books">搜索</a></b>&nbsp;&nbsp;|&nbsp;
  <a href="/add" title="Music">添加</a>&nbsp;&nbsp;|&nbsp;
  <a href="/top" title="Top 100">Top 10</a>
-            <br /><input type="search" class="inputbox" title="Pirate Search" name="q" placeholder="Search here..." value="{{sch_name}}" /><input value="Pirate Search" type="submit" class="submitbutton"  /><br />
+            <br /><input type="search" class="inputbox" title="Pirate Search" name="q" placeholder="Search here..." value="" /><input value="Pirate Search" type="submit" class="submitbutton"  /><br />
             <label title="文学" accesskey="a"><input id="all" onclick="setAll();" type="checkbox" checked>所有</label>
             <label title="经济" accesskey="x"><input name="audio" id="audio" onclick="rmAll();" type="checkbox">文学</label>
             <label title="经济" accesskey="q"><input name="audio" id="audio" onclick="rmAll();" type="checkbox">经济</label>
@@ -133,45 +133,113 @@
             <input type="hidden" name="orderby" value="99" />
         </form>
     </div><!-- // div:header -->
-
-    <h2><span>Search results: {{sch_name}}</span>&nbsp;Displaying hits from 0 to 30 (approx 79 found)</h2>
-
-<div id="SearchResults"><div id="content">
-	
-    <div id="main-content">
-<table id="searchResult">
-	<thead id="tableHead">
-		<tr class="header">
-			<th><title="Order by Type">类型</a></th>
-			<th><div class="sortby"><a href="/search/linux/0/1/200" title="Order by Name">书籍</a>
-			<th><abbr title="Seeders"><a href="/search/linux/0/8/200" title="Order by Seeders">作者</a></abbr></th>
-			<th><abbr title="Leechers"><a href="/search/linux/0/9/200" title="Order by Leechers">热度</a></abbr></th>
-		</tr>
-	</thead>
-
-	% for item in b_list:
-    <tr>
-		<td class="vertTh">
-			<center>
-				<a href="/browse/200" title="More from this category">{{item[2]}}</a><br />
-			</center>
-		</td>
-		<td>
-<div class="detName">			<a href="/book/{{item[8]}}" class="detLink" title="{{item[0]}}">{{item[0]}}</a>
+    <h2><span>详细信息</span>&nbsp;</h2>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+<form name="modify" method="post" action="/add">
+<div id="content">
+	<div id="main-content">
+		<div>
+<div id="detailsouterframe">
+<div id="response"></div>
+<div id="message"></div>
+<div id="detailsframe">
+<div id="title">
+<input name="title" placeholder="书名" autofocus required style="width:300px">
 </div>
-<a href="#"></a><a href="/user/y7"></a>
-			<font class="detDesc">Published {{item[3]}}, 出版社 {{item[4]}}&nbsp;页数<a class="detDesc" href="/user/y7/" title="Browse y7">{{item[6]}}</a></font>
-		</td>
-		<td align="right">{{item[1]}}</td>
-		<td align="right">{{item[7]}}</td>
-</tr>
-	% end
 
-</table>
-</div>
-<div align="center">1&nbsp;<a href="/search/linux/1/7/200/">2</a>&nbsp;<a href="/search/linux/2/7/200/">3</a>&nbsp;<a href="/search/linux/1/7/200/"><img src="/static/img/next.gif" border="0" alt="Next"/></a>&nbsp;
-</div>
-	</div></div></div><!-- //div:content -->
+    <div id='details'>
+        <dl class='col1'>
+            <dt>类型:</dt>
+            <dd><input name="b_type" placeholder="类型" autofocus required style="width:100px"></dd>
+
+        <dt>书本总量:</dt>
+            <dd><input name="amount" placeholder="书本数量" autofocus required style="width:100px"></a></dd>
+
+            <dt>出版社:</dt>
+            <dd><input name="press" placeholder="出版社" autofocus required style="width:100px"></dd>
+
+
+            <dt>出版社地址:</dt>
+            <dd><input name="press_addr" placeholder="出版社地址" autofocus required style="width:100px"></dd>
+        </dl>
+        <dl class='col2'>
+            <dt>出版时间:</dt>
+            <dd><input name="publish_date" placeholder="出版时间" autofocus required style="width:150px"></dd>
+            <dt>作者:</dt>
+            <dd><input name="author" placeholder="作者" autofocus required style="width:150px"></dd>
+            <dt>热度:</dt>
+            <dd><input name="hot" placeholder="热度" autofocus required style="width:150px"></dd>
+
+            <dt>页数:</dt>
+            <dd><input name="pages" placeholder="页数" autofocus required style="width:150px"></dd>
+
+            <dt>Comments</dt>
+            <dd><span id='NumComments'>0</span>
+                &nbsp;            </dd>
+
+            <br />
+            <dt>Info Hash:</dt><dd></dd>
+            FC4967B830B8285503AE6D93BA8BE4C3179E354F        </dl>
+    <br/>
+    <br/>
+    <div id="social">
+    </div>
+    <br /><br />    <div>
+        <div class="nfo">
+        <textarea name="about" placeholder="简介" autofocus required style="height:120px; width:595px"></textarea>
+        </div>
+        <br/>
+        <div class="download" style="text-align:center">
+            <input value="确定" type="submit" class="submitbutton" >
+            </div>
+            <div id="comments"></div>            </div>
+        </div>
+</div><!-- //div:content -->
+</form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	<div id="foot" style="text-align:center;margin-top:1em;">
 				<p>

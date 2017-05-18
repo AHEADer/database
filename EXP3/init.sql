@@ -12,7 +12,7 @@ amount INT DEFAULT 0,
 b_type VARCHAR(20),
 about VARCHAR(1000),
 hot INT DEFAULT 0,
-borrow INT DEFAULT 0, --11
+borrow INT DEFAULT 0,
 dated BOOLEAN DEFAULT FALSE,
 PRIMARY KEY (id)
 );
