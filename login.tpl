@@ -54,7 +54,7 @@
 <body>
     <div id="header">
 
-        <form method="get" id="q" action="/s/">
+        <form method="post" id="q" action="/s/search">
             <a href="/" class="img"><img src="/static/img/out.png" id="TPBlogo" alt="The Bay" /></a>
             <b><a href="/" title="Search Books">搜索</a></b>&nbsp;&nbsp;|&nbsp;
  <a href="/add" title="Music">添加</a>&nbsp;&nbsp;|&nbsp;
@@ -133,122 +133,25 @@
             <input type="hidden" name="orderby" value="99" />
         </form>
     </div><!-- // div:header -->
-    <h2><span>详细信息</span>&nbsp;</h2>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    % for item in bki:
-<form name="modify" method="post" action="/modify/{{item[0]}}">
-<div id="content">
-	<div id="main-content">
-		<div>
-<div id="detailsouterframe">
-<div id="response"></div>
-<div id="message"></div>
-<div id="detailsframe">
-<div id="title">
-<input name="title" value="{{item[1]}}" autofocus required style="width:300px">
-</div>
-
-    <div id='details'>
-        <dl class='col1'>
-            <dt>类型:</dt>
-            <dd><input name="b_type" value="{{item[8]}}" autofocus required style="width:100px"></dd>
-
-        <dt>书本总量:</dt>
-            <dd><input name="amount" value="{{item[7]}}" autofocus required style="width:100px"></a></dd>
-
-            <dt>出版社:</dt>
-            <dd><input name="press" value="{{item[4]}}" autofocus required style="width:100px"></dd>
+	<h2><span>Login</span>&nbsp;</h2>
 
 
-            <dt>出版社地址:</dt>
-            <dd><input name="press_addr" value="{{item[5]}}" autofocus required style="width:100px"></dd>
-        </dl>
-        <dl class='col2'>
-            <dt>出版时间:</dt>
-            <dd><input name="publish_date" value="{{item[3]}}" autofocus required style="width:150px"></dd>
-            <dt>作者:</dt>
-            <dd><input name="author" value="{{item[2]}}" autofocus required style="width:150px"></dd>
-            <dt>热度:</dt>
-            <dd><input name="hot" value="{{item[10]}}" autofocus required style="width:150px"></dd>
+	<form method="post" action="/login" name="loginform" id="loginForm">
+		<fieldset id="fs">
+			<label for="username">Username:
+			<input type="text" id="username" name="username" />
+			</label>
 
-            <dt>页数:</dt>
-            <dd><input name="pages" value="{{item[6]}}" autofocus required style="width:150px"></dd>
+			<label for="password">Password:
+			<input type="password" id="password" name="password" />
+			</label>
 
-            <dt>Comments</dt>
-            <dd><span id='NumComments'>0</span>
-                &nbsp;            </dd>
-
-            <br />
-            <dt>Info Hash:</dt><dd></dd>
-            FC4967B830B8285503AE6D93BA8BE4C3179E354F        </dl>
-    <br/>
-    <br/>
-    <div id="social">
-    </div>
-    <br /><br />    <div>
-        <div class="nfo">
-        <textarea name="about" autofocus required style="height:120px; width:595px">{{item[9]}}</textarea>
-        </div>
-        <br/>
-        <div class="download" style="text-align:center">
-            <input value="确定" type="submit" class="submitbutton" >
-            </div>
-            <div id="comments"></div>            </div>
-        </div>
-    </div>
-
-			<div class="ads" id="sky-banner">
-				 <iframe src="//thepiratebay.org/static/ads/exo_na/sky1.html" width="120" height="600" frameborder="0" scrolling="no"></iframe>
-			</div>
-			<script type="text/javascript" src="//thepiratebay.org/static/ads/ad-scroll.js"></script>
-	</div>
-</div><!-- //div:content -->
-</form>
-% end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+			<input type="hidden" name="act" value="login" />
+			<input name="submit" type="submit" id="submit" value="Login" />
+		</fieldset>
+	</form>
+	<script type="text/javascript">document.loginform.username.focus();</script>
+<br/>Forgotten your password?, click <a href="/recover">here</a> to recover it.<br/><br/></div><!-- //div:content -->
 
 	<div id="foot" style="text-align:center;margin-top:1em;">
 				<p>

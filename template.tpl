@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>图书管理系统</title>
-    <meta name="description" content="Download music, movies, games, software and much more. The Pirate Bay is the galaxy's most resilient BitTorrent site.">
+    <meta name="description" content="Download music, movies, games, software and much more. The Bay is the galaxy's most resilient BitTorrent site.">
     <meta name="keywords" content="mp3, avi, bittorrent, torrent, torrents, movies, music, games, applications, apps, download, upload, share, kopimi, magnets, magnet">
     <meta name="google-site-verification" content="bERYeomIC5eBWlPLupPPYPYGA9GvAUKzFHh3WIw24Xs" />
 
@@ -12,7 +12,7 @@
         <script src="static/js/html5_for_ie.js"></script>
     <![endif]-->
     <link rel="stylesheet" href="static/css/main.css">
-    <link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml" title="Search The Pirate Bay">
+    <link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml" title="Search The Bay">
     <link rel="alternate" hreflang="en" href="/language/en_EN">
     <link rel="alternate" hreflang="sv" href="/language/sv_SE">
     <link rel="alternate" hreflang="nb" href="/language/nb_NO">
@@ -102,7 +102,7 @@
 </head>
 <body>
 <div id="fp">
-    <h1><a href="/blog" title="The Pirate Bay"><span>The Pirate Bay</span></a></h1>
+    <h1><a href="/blog" title="The Bay"><span>The Bay</span></a></h1>
     <nav id="navlinks">
         <strong>Search Books</strong>
         <a href="/top" title="Top 10">Top 10</a>
@@ -110,7 +110,7 @@
     </nav>
     <form name="q" method="post" action="/s/search">
         <p id="inp">
-            <input name="q" type="search" title="Pirate Search" placeholder="Pirate Search" autofocus required >
+            <input name="q" type="search" title="Search" placeholder="Search" autofocus required >
             <span>
                 <a href="/settings" title="Preferences">Preferences</a>
                 <a href="/language" title="Languages">Languages</a>
@@ -127,7 +127,7 @@
             <label title="其他" accesskey="y"><input name="other" id="other" onclick="rmAll();" type="checkbox">其他</label>
         </p>
         <p id="subm">
-            <input type="submit" title="Pirate Search" value="Pirate Search" accesskey="s"  >
+            <input type="submit" title="Search" value="Search" accesskey="s"  >
             <input type="submit" title="I'm Feeling Lucky" name="lucky" value="I'm Feeling Lucky"  >
             <input type="hidden" name="page" value="0">
             <input type="hidden" name="orderby" value="99">

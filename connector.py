@@ -138,6 +138,11 @@ def send_image(filename):
     return static_file(filename, root='./static/img', mimetype='image/jpg')
 
 
+@route('/login')
+def index():
+    return template('login')
+
+
 @post('/s/search')
 def index():
     request.POST.decode('utf-8')
@@ -157,7 +162,7 @@ def index():
     print(arg)
 
     # print(str(arg, encoding='utf-8'))
-    ratio = 70+len(arg)/2
+    ratio = 73+len(arg)/2
 
     cursor.execute("SELECT title, author, b_type, publish_date, press, press_addr, pages, hot, id FROM"
                    " library.book WHERE levenshtein_ratio(title, %s) >= %s", (arg, ratio))
@@ -193,4 +198,4 @@ def index():
     # return template('template', name=name)
     return template('sch_rst', b_list = rt_fin, sch_name = arg)
 
-run(host='localhost', port=8080)
+run(host='0.0.0.0', port=8080)

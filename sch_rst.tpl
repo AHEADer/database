@@ -4,9 +4,9 @@
     <title>图书管理系统</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="google-site-verification" content="bERYeomIC5eBWlPLupPPYPYGA9GvAUKzFHh3WIw24Xs" />
-    <link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml" title="Search The Pirate Bay" />
+    <link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml" title="Search The Bay" />
     <link rel="stylesheet" type="text/css" href="/static/css/pirate6.css"/>
-    <link rel="canonical" href="//thepiratebay.org/search/linux/0/99/200" />
+    <link rel="canonical" href="//thepiratebay.org/search//0/99/200" />
     <style type="text/css">
         .searchBox{
             margin: 6px;
@@ -45,8 +45,8 @@
     </style>
     <script src="/static/js/jquery.min.js" type="text/javascript"></script>
     <script src="/static/js/tpb.js" type="text/javascript"></script>
-    <meta name="description" content="Search for and download any torrent from the pirate bay using search query linux. Direct download via magnet link."/>
-    <meta name="keywords" content="linux direct download torrent magnet tpb piratebay search"/>
+    <meta name="description" content="Search for and download any torrent from the pirate bay using search query . Direct download via magnet link."/>
+    <meta name="keywords" content=" direct download torrent magnet tpb piratebay search"/>
 
     <script language="javascript" type="text/javascript">if (top.location != self.location) {top.location.replace(self.location);}</script>
 </head>
@@ -55,11 +55,11 @@
     <div id="header">
 
         <form method="post" id="q" action="/s/search">
-            <a href="/" class="img"><img src="/static/img/out.png" id="TPBlogo" alt="The Pirate Bay" /></a>
+            <a href="/" class="img"><img src="/static/img/out.png" id="TPBlogo" alt="The Bay" /></a>
             <b><a href="/" title="Search Books">搜索</a></b>&nbsp;&nbsp;|&nbsp;
  <a href="/add" title="Music">添加</a>&nbsp;&nbsp;|&nbsp;
  <a href="/top" title="Top 100">Top 10</a>
-            <br /><input type="search" class="inputbox" title="Pirate Search" name="q" placeholder="Search here..." value="{{sch_name}}" /><input value="Pirate Search" type="submit" class="submitbutton"  /><br />
+            <br /><input type="search" class="inputbox" title="Search" name="q" placeholder="Search here..." value="{{sch_name}}" /><input value="Search" type="submit" class="submitbutton"  /><br />
             <label title="文学" accesskey="a"><input id="all" onclick="setAll();" type="checkbox" checked>所有</label>
             <label title="经济" accesskey="x"><input name="audio" id="audio" onclick="rmAll();" type="checkbox">文学</label>
             <label title="经济" accesskey="q"><input name="audio" id="audio" onclick="rmAll();" type="checkbox">经济</label>
@@ -143,9 +143,9 @@
 	<thead id="tableHead">
 		<tr class="header">
 			<th><title="Order by Type">类型</a></th>
-			<th><div class="sortby"><a href="/search/linux/0/1/200" title="Order by Name">书籍</a>
-			<th><abbr title="Seeders"><a href="/search/linux/0/8/200" title="Order by Seeders">作者</a></abbr></th>
-			<th><abbr title="Leechers"><a href="/search/linux/0/9/200" title="Order by Leechers">热度</a></abbr></th>
+			<th><div class="sortby"><a href="/search//0/1/200" title="Order by Name">书籍</a>
+			<th><abbr title="Seeders"><a href="/search//0/8/200" title="Order by Seeders">作者</a></abbr></th>
+			<th><abbr title="Leechers"><a href="/search//0/9/200" title="Order by Leechers">热度</a></abbr></th>
 		</tr>
 	</thead>
 
@@ -169,7 +169,7 @@
 
 </table>
 </div>
-<div align="center">1&nbsp;<a href="/search/linux/1/7/200/">2</a>&nbsp;<a href="/search/linux/2/7/200/">3</a>&nbsp;<a href="/search/linux/1/7/200/"><img src="/static/img/next.gif" border="0" alt="Next"/></a>&nbsp;
+<div align="center">1&nbsp;<a href="/search//1/7/200/">2</a>&nbsp;<a href="/search//2/7/200/">3</a>&nbsp;<a href="/search//1/7/200/"><img src="/static/img/next.gif" border="0" alt="Next"/></a>&nbsp;
 </div>
 	</div></div></div><!-- //div:content -->
 
