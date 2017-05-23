@@ -139,7 +139,7 @@
     <nav>
 	<a href="/login" title="Login">Login</a> |
 	<a href="/register" title="Register">Register</a> |
-	<a href="/language" title="Select language">Language / Select language</a> |
+	<a href="/account" title="Account">Account</a> |
 	<a href="/about" title="About">About</a> |
 	<a href="/blog" title="Blog">Blog</a>
 	<br />

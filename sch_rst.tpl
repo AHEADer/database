@@ -146,6 +146,7 @@
 			<th><div class="sortby"><a href="/search//0/1/200" title="Order by Name">书籍</a>
 			<th><abbr title="Seeders"><a href="/search//0/8/200" title="Order by Seeders">作者</a></abbr></th>
 			<th><abbr title="Leechers"><a href="/search//0/9/200" title="Order by Leechers">热度</a></abbr></th>
+            <th><abbr title="Borrow"><a href="" title="Order by Leechers"></a></abbr></th>
 		</tr>
 	</thead>
 
@@ -164,6 +165,7 @@
 		</td>
 		<td align="right">{{item[1]}}</td>
 		<td align="right">{{item[7]}}</td>
+        <td align="right"><a href="/borrow/{{item[8]}}">借书</a></td>
 </tr>
 	% end
 
@@ -177,7 +179,7 @@
 				<p>
 			<a href="/login" title="Login">Login</a> | 
 			<a href="/register" title="Register">Register</a> | 
-			<a href="/language" title="Select language">Language / Select language</a> |
+			<a href="/account" title="Account">Account</a> |
 			<a href="/about" title="About">About</a> |
 			<a href="/blog" title="Blog">Blog</a>
 			<br />

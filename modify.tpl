@@ -192,13 +192,13 @@
             <dt>页数:</dt>
             <dd><input name="pages" value="{{item[6]}}" autofocus required style="width:150px"></dd>
 
-            <dt>Comments</dt>
-            <dd><span id='NumComments'>0</span>
+            <dt>是否下架(0为否，1为是)</dt>
+            <dd><input name="off" value="{{item[12]}}" autofocus required style="width:150px">
                 &nbsp;            </dd>
 
             <br />
-            <dt>Info Hash:</dt><dd></dd>
-            FC4967B830B8285503AE6D93BA8BE4C3179E354F        </dl>
+            <dt>价格:</dt><dd></dd>
+            <input name="price" value="{{item[-1]}}" autofocus required style="width:150px"></dl>
     <br/>
     <br/>
     <div id="social">
@@ -254,7 +254,7 @@
 				<p>
 			<a href="/login" title="Login">Login</a> | 
 			<a href="/register" title="Register">Register</a> | 
-			<a href="/language" title="Select language">Language / Select language</a> |
+			<a href="/account" title="Account">Account</a> |
 			<a href="/about" title="About">About</a> |
 			<a href="/blog" title="Blog">Blog</a>
 			<br />

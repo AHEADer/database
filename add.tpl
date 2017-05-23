@@ -54,7 +54,7 @@
 <body>
     <div id="header">
 
-        <form method="get" id="q" action="/s/">
+        <form method="post" id="q" action="/s/search">
             <a href="/" class="img"><img src="/static/img/out.png" id="TPBlogo" alt="The Bay" /></a>
             <b><a href="/" title="Search Books">搜索</a></b>&nbsp;&nbsp;|&nbsp;
  <a href="/add" title="Music">添加</a>&nbsp;&nbsp;|&nbsp;
@@ -245,7 +245,7 @@
 				<p>
 			<a href="/login" title="Login">Login</a> | 
 			<a href="/register" title="Register">Register</a> | 
-			<a href="/language" title="Select language">Language / Select language</a> |
+			<a href="/account" title="Account">Account</a> |
 			<a href="/about" title="About">About</a> |
 			<a href="/blog" title="Blog">Blog</a>
 			<br />

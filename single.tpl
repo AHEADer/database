@@ -172,13 +172,18 @@
             <dt>页数:</dt>
             <dd>{{item[6]}}</dd>
 
-            <dt>Comments</dt>
-            <dd><span id='NumComments'>0</span>
-                &nbsp;            </dd>
+            %if off == 0:
+            <dt>是否下架</dt>
+            <dd><span id='Off'>否</span>
+                &nbsp;</dd>
+            %else:
+            <dt>是否下架</dt>
+            <dd><span id='Off'>是</span>
+                &nbsp;</dd>
+            %end
 
-            <br />
-            <dt>Info Hash:</dt><dd></dd>
-            FC4967B830B8285503AE6D93BA8BE4C3179E354F        </dl>
+            <dt>价格:</dt><dd></dd>
+            {{item[-1]}}</dl>
             <div id="CommentDiv" style="display:none;">
         <form method="post" id="commentsform" name="commentsform" onsubmit="new Ajax.Updater('NumComments', '/ajax_post_comment.php', {evalScripts:true, asynchronous:true, parameters:Form.serialize(this)}); return false;" action="/ajax_post_comment.php">
             <p class="info">
@@ -193,19 +198,28 @@
     <div id="social">
     </div>
     <br /><br />    <div>
+        %if auth == 1:
         <div class="download">
   		          <a href="/modify/{{item[0]}}" title="修改">修改</a>
 
         </div>
         <div style="clear:both;">如果您对这个书本信息有疑问，可以修改</div>
+        %end
         <div class="nfo">
             <pre>{{item[9]}}
 </pre>
         </div>
         <br/>
+        %if auth == 1:
         <div class="download">
             <a href="/delete/{{item[0]}}" title="删除">删除</a>
               </div>
+        %end
+        %if auth != -1:
+        <div class="download">
+            <a href="/borrow/{{item[0]}}" title="借书">借书</a>
+              </div>
+        %end
             <div id="filelistContainer" style="display:none;">
                 <a id="show"></a>
             </div>
@@ -225,7 +239,7 @@
 				<p>
 			<a href="/login" title="Login">Login</a> | 
 			<a href="/register" title="Register">Register</a> | 
-			<a href="/language" title="Select language">Language / Select language</a> |
+			<a href="/account" title="Account">Account</a> |
 			<a href="/about" title="About">About</a> |
 			<a href="/blog" title="Blog">Blog</a>
 			<br />

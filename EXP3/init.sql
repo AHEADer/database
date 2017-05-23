@@ -27,13 +27,19 @@ mysqlimport --ignore-lines=1 \
 
 CREATE TABLE user(
 id MEDIUMINT NOT NULL AUTO_INCREMENT,
-username VARCHAR(20),
+username VARCHAR(20) UNIQUE,
 password VARCHAR(20),
 is_admin BIT,
 login_time TIMESTAMP,
+status INT,
   PRIMARY KEY (id)
 );
 
+INSERT INTO user(username, password, is_admin, status) VALUES
+  ('david', '123', 0, 1),
+  ('admin', 'admin', 1, 1);
+
+ALTER TABLE user add fine INT DEFAULT 0;
 
 CREATE TABLE borrow_list(
 id MEDIUMINT NOT NULL AUTO_INCREMENT,
@@ -44,6 +50,19 @@ r_time TIMESTAMP,
   PRIMARY KEY (id)
 );
 
+
+INSERT INTO borrow_list(b_id, u_id, b_time, r_time) VALUES
+  (10, 1, '2017-05-01', '2017-5-23'),
+  (11, 1, '2017-05-01', '2017-5-23'),
+  (13, 1, '2017-05-01', '2017-5-23');
+
+CREATE TABLE setting(
+id MEDIUMINT NOT NULL AUTO_INCREMENT,
+during_days INT,
+rt_late_charge INT,
+destory_charge INT,
+  PRIMARY KEY (id)
+);
 /*
 with open('book.csv') as f:
     reader = csv.DictReader(f)

@@ -30,8 +30,13 @@ def index(id):
     for i in single:
         book_info.append(i)
     print(book_info)
-    # print(book_info[7], book_info[11])
-    return template('single', bki = book_info)
+    s = request.environ.get('beaker.session')
+    if 'auth' in s:
+        return template('single', bki=book_info, auth = s['auth'], off=book_info[0][12])
+    else:
+        # print(book_info[7], book_info[11])
+        return template('single', bki = book_info, auth = -1, off=book_info[0][12])
+
 
 @get('/modify/<id>')
 def index(id):
@@ -47,7 +52,6 @@ def index(id):
 
 @post('/modify/<id>')
 def index(id):
-    single = mariadb_connection.cursor(buffered=True)
     about = request.POST.getunicode('about')
     title = request.POST.getunicode('title')
     author = request.POST.getunicode('author')
@@ -58,9 +62,12 @@ def index(id):
     b_type = request.POST.getunicode('b_type')
     hot = request.POST.getunicode('hot')
     press_addr = request.POST.getunicode('press_addr')
+    dated = request.POST.getunicode('off')
+    price = request.POST.getunicode('price')
+    single = mariadb_connection.cursor(buffered=True)
     update = "UPDATE library.book SET about=%s, title=%s, author=%s, publish_date = %s, \
-    press = %s, pages = %s, amount = %s, b_type = %s, hot = %s, press_addr = %s WHERE id = %s"
-    args = (about, title, author, publish_date, press, pages, amount, b_type, hot, press_addr, id)
+    press = %s, pages = %s, amount = %s, b_type = %s, hot = %s, press_addr = %s, dated = %s, price = %s WHERE id = %s"
+    args = (about, title, author, publish_date, press, pages, amount, b_type, hot, press_addr, dated, price, id, )
     single.execute(update, args)
     mariadb_connection.commit()
     return redirect('/book/'+id)
@@ -118,6 +125,70 @@ def index(id):
     return redirect('/')
 
 
+@get('/user/<id>/return/<bid>')
+def index(id, bid):
+    s = request.environ.get('beaker.session')
+    if 'id' in s:
+        if str(s['id']) != id:
+            print("id not equal")
+            return redirect('/')
+        else:
+            # confirm identity
+            single = mariadb_connection.cursor(buffered=True)
+            single.execute("SELECT * FROM borrow_list WHERE u_id = %s AND b_id = %s", (id, bid))
+            if single.rowcount == 0:
+                # not exist!
+                print("hehe")
+                return redirect('/')
+            borrow_info = []
+            for i in single:
+                borrow_info.append(i)
+            exp_time = borrow_info[0][-1] - datetime.datetime.strptime(s['timestamp'], '%Y-%m-%d %H:%M:%S')
+            if exp_time.days < 0:
+                # which means expired
+                print("expired!")
+                single.execute("UPDATE user SET fine = fine - 5 WHERE id = %s", (id, ))
+            single.execute("DELETE FROM borrow_list WHERE u_id = %s AND b_id = %s", (id, bid))
+            single.execute("UPDATE book SET borrow = borrow-1 WHERE id = %s", (bid,))
+            mariadb_connection.commit()
+            print(borrow_info)
+            return redirect('/account')
+
+
+@get('/user/pay/<id>')
+def index(id):
+    cursor = mariadb_connection.cursor(buffered=True)
+    cursor.execute("SELECT fine FROM user WHERE id = %s", (id,))
+    fine_save = []
+    for i in cursor:
+        fine_save.append(i)
+    print(fine_save)
+    if fine_save[0][0] < 0:
+        cursor.execute("UPDATE user SET fine = 0 WHERE id = %s", (id,))
+    return redirect('/account')
+
+
+@get('/borrow/<bid>')
+def index(bid):
+    s = request.environ.get('beaker.session')
+    if 'id' in s:
+        id = s['id']
+        cursor = mariadb_connection.cursor(buffered=True)
+        cursor.execute("SELECT * FROM book WHERE id = %s AND amount > borrow", (bid,))
+        if cursor.rowcount == 0:
+            return "<h2>该类书已借完</h2>"
+        ts = time.time()
+        b_time = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+        ts = ts + 30 * 24 * 60 * 60
+        r_time = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+        cursor.execute("INSERT INTO borrow_list (b_id, u_id, b_time, r_time) VALUES (%s, %s, %s, %s)", (bid, id, b_time, r_time, ))
+        cursor.execute("UPDATE book SET borrow = borrow+1 WHERE id = %s", (bid, ))
+        mariadb_connection.commit()
+        return redirect('/account')
+    else:
+        return "<h2>Not login</h2>"
+
+
 @get('/static/css/<filename:re:.*\.css>')
 def send_css(filename):
     print(filename)
@@ -163,6 +234,7 @@ def index():
     user_info = []
     if cursor.rowcount == 0:
         print("no such user!")
+        return redirect('/')
     else:
         for i in cursor:
             user_info.append(i)
@@ -174,10 +246,10 @@ def index():
         s['username'] = username
         s['id'] = user_info[0][0]
         s['auth'] = user_info[0][3]
+        s['status'] = user_info[0][5]
         s.save()
-        print(s['username'])
 
-    return redirect('/')
+    return redirect('/account')
 
 
 @route('/account')
@@ -190,29 +262,41 @@ def index():
         ts = time.time()
         cur_time = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
         s['timestamp'] = cur_time
-        
+
         cursor = mariadb_connection.cursor(buffered=True)
-        cursor.execute("SELECT title, author, b_type, publish_date, press, press_addr, pages, hot, book.id, borrow_list.b_time "
+        cursor.execute("SELECT fine FROM user WHERE id = %s", (id,))
+        fine_save = []
+        for i in cursor:
+            fine_save.append(i)
+        print(fine_save)
+        if fine_save[0][0] < 0:
+            # which means arrearage
+            # stop him!
+            return """<h2>你欠费了！点击此处缴费<a href="/user/pay/""" + str(id) + """">缴费</a></h2>"""
+        cursor.execute("SELECT title, author, b_type, publish_date, press, press_addr, pages, hot, book.id, borrow_list.r_time "
                        "FROM book, borrow_list WHERE book.id IN (SELECT b_id FROM library.borrow_list WHERE u_id = %s) "
                        "AND book.id = borrow_list.b_id;", (id, ))
         book_list = []
         for i in cursor:
             book_list.append(i)
-        
-        
+
         for index in range(len(book_list)):
-            borrow_time = datetime.datetime.strptime(s['timestamp'], '%Y-%m-%d %H:%M:%S') - book_list[index][-1]
+            borrow_time = book_list[index][-1] - datetime.datetime.strptime(s['timestamp'], '%Y-%m-%d %H:%M:%S')
             print(borrow_time)
-            if borrow_time.seconds > 60*60:
+            if borrow_time.days < 0:
                 ad_tuple = ("expired!",)
                 book_list[index] = book_list[index] + ad_tuple
+                s['status'] = 0
             else:
-                ad_tuple = ("离过期还有" + str((int)(borrow_time.seconds/60)) + "分钟",)
+                ad_tuple = ("离过期还有" + str(borrow_time.days) + "天" + str(borrow_time.seconds//3600) + "小时"
+                            + str((borrow_time.seconds//60)%60) + "分钟",)
                 book_list[index] = book_list[index] + ad_tuple
-                
-            
-        print("why?")
-        print(book_list[0])
+
+        if s['status'] == 0:
+            print("book expired!")
+            cursor.execute("UPDATE library.user SET status = 0 WHERE id = %s", (s['id'], ))
+            mariadb_connection.commit()
+
         return template('account', username=s['username'], b_list=book_list, id=s['id'])
 
     return redirect('/')
