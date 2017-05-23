@@ -154,7 +154,7 @@
     <div id="stats">
     </div>
     <div id="icons">
-<br /><a href="http://bitcoin.org" target="_NEW">BitCoin</a>: <b><a href="bitcoin:129TQVAroeehD9fZpzK51NdZGQT4TqifbG">129TQVAroeehD9fZpzK51NdZGQT4TqifbG</a></b><br /><br />	                <a href="/rss" title="RSS" class="sp rss"><span>RSS</span></a><br />
+          <a href="/rss" title="RSS" class="sp rss"><span>RSS</span></a><br />
 		<a href="http://www.kopimi.com/kopimi" target="_blank" title="Kopimi" class="sp kopimi"><span>Kopimi</span></a>
     </div>
 </footer>

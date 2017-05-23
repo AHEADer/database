@@ -17,18 +17,33 @@ dated BOOLEAN DEFAULT FALSE,
 PRIMARY KEY (id)
 );
 
-
+/*
 mysqlimport --ignore-lines=1 \
             --fields-terminated-by=, \
             --local -u root \
             -p library \
              book.csv
+*/
 
-CREATE TABLE borrow_list(
-b_id INT bookid,
-u_id INT userid,
+CREATE TABLE user(
+id MEDIUMINT NOT NULL AUTO_INCREMENT,
+username VARCHAR(20),
+password VARCHAR(20),
+is_admin BIT,
+login_time TIMESTAMP,
+  PRIMARY KEY (id)
 );
 
+
+CREATE TABLE borrow_list(
+id MEDIUMINT NOT NULL AUTO_INCREMENT,
+b_id MEDIUMINT NOT NULL ,
+u_id MEDIUMINT NOT NULL ,
+b_time TIMESTAMP,
+  PRIMARY KEY (id)
+);
+
+/*
 with open('book.csv') as f:
     reader = csv.DictReader(f)
     for row in reader:
@@ -44,6 +59,7 @@ with open('book.csv') as f:
         tmp_cur.execute(add_line, add_data)
         tmp_cur = tmp_cur.close()
         mariadb_connection.commit()
+*/
 
 /*模板
 <tr>

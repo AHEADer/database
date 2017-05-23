@@ -1,13 +1,20 @@
 import mysql.connector as mariadb
 from bottle import *
 import csv
+import time
+import datetime
+from beaker.middleware import SessionMiddleware
 
 mariadb_connection = mariadb.connect(user='root', password='123',
 database='library')
 
-
-        # print(row['about'])
-# cursor = mariadb_connection.cursor()
+session_opts = {
+    'session.type': 'file',
+    'session.cookie_expires': 600,
+    'session.data_dir': './data',
+    'session.auto': True
+}
+app = SessionMiddleware(app(), session_opts)
 
 
 @route('/')
@@ -85,13 +92,13 @@ def index():
         single = mariadb_connection.cursor(buffered=True)
         single.execute(update, args)
         mariadb_connection.commit()
-    except mysql.connector.Error as err:
+    except mariadb.Error as err:
         return "<h2>Oop! Sth wrong!</h2>"
     
     try:
         single = mariadb_connection.cursor(buffered=True)
         single.execute("SELECT last_insert_id()")
-    except mysql.connector.Error as err:
+    except mariadb.Error as err:
         return "<h2>Oop! Sth wrong!</h2>"
     
     id = ()
@@ -106,7 +113,7 @@ def index(id):
     try:
         single = mariadb_connection.cursor(buffered=True)
         single.execute("DELETE FROM library.book WHERE id=%s", (id, ))
-    except mysql.connector.Error as err:
+    except mariadb.Error as err:
         return "<h2>Oop! Sth wrong!</h2>"
     return redirect('/')
 
@@ -138,9 +145,64 @@ def send_image(filename):
     return static_file(filename, root='./static/img', mimetype='image/jpg')
 
 
-@route('/login')
+@get('/login')
 def index():
+    s = request.environ.get('beaker.session')
+    if 'username' in s:
+        return "<h2>You have login! "+ s['username'] + "</h2>"
+
     return template('login')
+
+
+@post('/login')
+def index():
+    username = request.POST.getunicode('username')
+    password = request.POST.getunicode('password')
+    cursor = mariadb_connection.cursor(buffered=True)
+    cursor.execute("SELECT * FROM library.user WHERE username = %s AND password = %s", (username, password))
+    user_info = []
+    if cursor.rowcount == 0:
+        print("no such user!")
+    else:
+        for i in cursor:
+            user_info.append(i)
+        print(user_info)
+        s = request.environ.get('beaker.session')
+        ts = time.time()
+        timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+        s['timestamp'] = timestamp
+        s['username'] = username
+        s['id'] = user_info[0][0]
+        s['auth'] = user_info[0][3]
+        s.save()
+        print(s['username'])
+
+    return redirect('/')
+
+
+@route('/account')
+def index():
+    s = request.environ.get('beaker.session')
+    if 'username' in s:
+        id = s['id']
+        print(s)
+        print("!!!!!")
+        print(id)
+        cursor = mariadb_connection.cursor(buffered=True)
+        cursor.execute("SELECT title, author, b_type, publish_date, press, press_addr, pages, hot, book.id, borrow_list.b_time "
+                       "FROM book, borrow_list WHERE book.id IN (SELECT b_id FROM library.borrow_list WHERE u_id = %s) "
+                       "AND book.id = borrow_list.b_id;", (id, ))
+        book_list = []
+        for i in cursor:
+            book_list.append(i)
+        print(book_list)
+        print("date expired:")
+        print(datetime.datetime.strptime(s['timestamp'], '%Y-%m-%d %H:%M:%S') - book_list[0][-1])
+
+        return template('account', username=s['username'], b_list=book_list)
+
+    return redirect('/')
+
 
 
 @post('/s/search')
@@ -198,4 +260,4 @@ def index():
     # return template('template', name=name)
     return template('sch_rst', b_list = rt_fin, sch_name = arg)
 
-run(host='0.0.0.0', port=8080)
+run(host='0.0.0.0', port=8080, app=app)
