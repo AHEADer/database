@@ -148,6 +148,7 @@
 			<th><abbr title="Leechers"><a href="" title="Order by Leechers">热度</a></abbr></th>
             <th><abbr title="Renew"><a href="" title="Order by Leechers"></a></abbr></th>
             <th><abbr title="Return"><a href="" title="Order by Leechers"></a></abbr></th>
+            <th><abbr title="expired"><a href="" title="Order by Leechers"></a></abbr></th>
 
 		</tr>
 	</thead>
@@ -169,6 +170,7 @@
 		<td align="right">{{item[7]}}</td>
         <td align="right"><a href="/user/{{id}}/renew/{{item[8]}}">续借</a></td>
         <td align="right"><a href="/user/{{id}}/return/{{item[8]}}">还书</a></td>
+        <td align="right">{{item[-1]}}</td>
 </tr>
 	% end
 

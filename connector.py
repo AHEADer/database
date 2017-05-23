@@ -185,9 +185,12 @@ def index():
     s = request.environ.get('beaker.session')
     if 'username' in s:
         id = s['id']
-        print(s)
-        print("!!!!!")
-        print(id)
+        
+        # UPDATE TIME HERE:
+        ts = time.time()
+        cur_time = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+        s['timestamp'] = cur_time
+        
         cursor = mariadb_connection.cursor(buffered=True)
         cursor.execute("SELECT title, author, b_type, publish_date, press, press_addr, pages, hot, book.id, borrow_list.b_time "
                        "FROM book, borrow_list WHERE book.id IN (SELECT b_id FROM library.borrow_list WHERE u_id = %s) "
@@ -195,11 +198,22 @@ def index():
         book_list = []
         for i in cursor:
             book_list.append(i)
-        print(book_list)
-        print("date expired:")
-        print(datetime.datetime.strptime(s['timestamp'], '%Y-%m-%d %H:%M:%S') - book_list[0][-1])
-
-        return template('account', username=s['username'], b_list=book_list)
+        
+        
+        for index in range(len(book_list)):
+            borrow_time = datetime.datetime.strptime(s['timestamp'], '%Y-%m-%d %H:%M:%S') - book_list[index][-1]
+            print(borrow_time)
+            if borrow_time.seconds > 60*60:
+                ad_tuple = ("expired!",)
+                book_list[index] = book_list[index] + ad_tuple
+            else:
+                ad_tuple = ("离过期还有" + str((int)(borrow_time.seconds/60)) + "分钟",)
+                book_list[index] = book_list[index] + ad_tuple
+                
+            
+        print("why?")
+        print(book_list[0])
+        return template('account', username=s['username'], b_list=book_list, id=s['id'])
 
     return redirect('/')
 
