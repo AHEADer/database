@@ -52,11 +52,6 @@
 </head>
 
 <body>
-%if error != "":
-<script>
-    alert("{{error}}")
-</script>
-%end
     <div id="header">
 
         <form method="post" id="q" action="/s/search">
@@ -139,7 +134,7 @@
         </form>
     </div><!-- // div:header -->
 
-    <h2><span>Username: {{username}}</span>&nbsp;</h2>
+    <h2><span>用户列表</span>&nbsp;</h2>
 
 <div id="SearchResults"><div id="content">
 
@@ -147,15 +142,12 @@
 <table id="searchResult">
 	<thead id="tableHead">
 		<tr class="header">
-			<th><a title="Order by Type">类型</a></th>
-			<th><div class="sortby"><a href="" title="Order by Name">书籍</a>
-			<th><abbr title="Seeders"><a href="" title="Order by Seeders">作者</a></abbr></th>
-			<th><abbr title="Leechers"><a href="" title="Order by Leechers">热度</a></abbr></th>
-            <th><abbr title="Renew"><a href="" title="Order by Leechers"></a></abbr></th>
-            <th><abbr title="Return"><a href="" title="Order by Leechers"></a></abbr></th>
-            <th><abbr title="expired"><a href="" title="Order by Leechers"></a></abbr></th>
-            <th><abbr title="expired"><a href="" title="Order by Leechers"></a></abbr></th>
-
+			<th><title="Order by Type">用户id</a></th>
+			<th><div class="sortby"><a title="Order by Name">用户名</a>
+			<th><abbr title="Seeders"><a title="Order by Seeders">状态</a></abbr></th>
+			<th><abbr title="Leechers"><a href= title="Order by Leechers">权限</a></abbr></th>
+            <th><abbr title="Borrow"><a href="" title="Order by Leechers">余额</a></abbr></th>
+            <th><abbr title="Borrow"><a href="" title="Order by Leechers">上次登录时间</a></abbr></th>
 		</tr>
 	</thead>
 
@@ -163,21 +155,17 @@
     <tr>
 		<td class="vertTh">
 			<center>
-				<a href="/browse/200" title="More from this category">{{item[2]}}</a><br />
+				<a href="/browse/200" title="More from this category">{{item[0]}}</a><br />
 			</center>
 		</td>
 		<td>
-<div class="detName">			<a href="/book/{{item[8]}}" class="detLink" title="{{item[0]}}">{{item[0]}}</a>
+<div class="detName">			<a href="/user/{{item[0]}}" class="detLink" title="{{item[1]}}">{{item[1]}}</a>
 </div>
-<a href="#"></a><a href="/user/y7"></a>
-			<font class="detDesc">Published {{item[3]}}, 出版社 {{item[4]}}&nbsp;页数<a class="detDesc" href="/user/y7/" title="Browse y7">{{item[6]}}</a></font>
 		</td>
-		<td align="right">{{item[1]}}</td>
-		<td align="right">{{item[7]}}</td>
-        <td align="right"><a href="/user/{{id}}/renew/{{item[-2]}}">续借</a></td>
-        <td align="right"><a href="/user/{{id}}/return/{{item[-2]}}">还书</a></td>
-        <td align="right"><a href="/user/{{id}}/destory/{{item[-2]}}">损坏</a></td>
-        <td align="right">{{item[-1]}}</td>
+        <td align="right">{{item[8]}}</td>
+		<td align="right">{{item[3]}}</td>
+		<td align="right">{{item[6]}}</td>
+        <td align="right">{{item[4]}}</td>
 </tr>
 	% end
 

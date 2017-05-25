@@ -135,10 +135,9 @@ def index(id, bid):
         else:
             # confirm identity
             single = mariadb_connection.cursor(buffered=True)
-            single.execute("SELECT * FROM borrow_list WHERE u_id = %s AND b_id = %s", (id, bid))
+            single.execute("SELECT * FROM borrow_list WHERE u_id = %s AND id = %s", (id, bid))
             if single.rowcount == 0:
                 # not exist!
-                print("hehe")
                 return redirect('/')
             borrow_info = []
             for i in single:
@@ -148,8 +147,71 @@ def index(id, bid):
                 # which means expired
                 print("expired!")
                 single.execute("UPDATE user SET fine = fine - 5 WHERE id = %s", (id, ))
-            single.execute("DELETE FROM borrow_list WHERE u_id = %s AND b_id = %s", (id, bid))
-            single.execute("UPDATE book SET borrow = borrow-1 WHERE id = %s", (bid,))
+            single.execute("DELETE FROM borrow_list WHERE id = %s", (bid, ))
+            single.execute("UPDATE book SET borrow = borrow-1 WHERE id = %s", (borrow_info[0][1],))
+            mariadb_connection.commit()
+            print(borrow_info)
+            return redirect('/account')
+
+
+@get('/user/<id>/destory/<bid>')
+def index(id, bid):
+    s = request.environ.get('beaker.session')
+    if 'id' in s:
+        if str(s['id']) != id:
+            print("id not equal")
+            return redirect('/')
+        else:
+            # confirm identity
+            single = mariadb_connection.cursor(buffered=True)
+            single.execute("SELECT * FROM borrow_list WHERE u_id = %s AND id = %s", (id, bid))
+            if single.rowcount == 0:
+                # not exist!
+                return redirect('/')
+            borrow_info = []
+            for i in single:
+                borrow_info.append(i)
+            exp_time = borrow_info[0][-1] - datetime.datetime.strptime(s['timestamp'], '%Y-%m-%d %H:%M:%S')
+            if exp_time.days < 0:
+                # which means expired
+                print("expired!")
+                single.execute("UPDATE user SET fine = fine - 5 WHERE id = %s", (id, ))
+            single.execute("SELECT price FROM book WHERE id = %s", (borrow_info[0][1],))
+            rs = convert(single)
+            single.execute("UPDATE user SET fine = fine - %s WHERE id = %s", (rs[0][0],id,))
+            single.execute("DELETE FROM borrow_list WHERE id = %s", (bid, ))
+            single.execute("UPDATE book SET borrow = borrow-1 WHERE id = %s", (borrow_info[0][1],))
+            single.execute("UPDATE book SET amount = amount-1 WHERE id = %s", (borrow_info[0][1],))
+            mariadb_connection.commit()
+            return redirect('/account')
+
+
+@get('/user/<id>/renew/<bid>')
+def index(id, bid):
+    s = request.environ.get('beaker.session')
+    if 'id' in s:
+        if str(s['id']) != id:
+            print("id not equal")
+            return redirect('/')
+        else:
+            # confirm identity
+            single = mariadb_connection.cursor(buffered=True)
+            single.execute("SELECT * FROM borrow_list WHERE u_id = %s AND id = %s", (id, bid))
+            if single.rowcount == 0:
+                # not exist!
+                return redirect('/')
+            borrow_info = []
+            for i in single:
+                borrow_info.append(i)
+            exp_time = borrow_info[0][-1] - datetime.datetime.strptime(s['timestamp'], '%Y-%m-%d %H:%M:%S')
+            if exp_time.days < 0:
+                # which means expired
+                return ("<h2>expired!Cannot renew!</h2>")
+            ts = time.time()
+            ts += 30*24*60*60
+            renew_time = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+            single.execute("UPDATE borrow_list SET r_time = %s WHERE id = %s", (renew_time, bid,))
+            single.execute("UPDATE book SET borrow = borrow-1 WHERE id = %s", (borrow_info[0][1],))
             mariadb_connection.commit()
             print(borrow_info)
             return redirect('/account')
@@ -158,13 +220,14 @@ def index(id, bid):
 @get('/user/pay/<id>')
 def index(id):
     cursor = mariadb_connection.cursor(buffered=True)
+    s = request.environ.get('beaker.session')
     cursor.execute("SELECT fine FROM user WHERE id = %s", (id,))
     fine_save = []
     for i in cursor:
         fine_save.append(i)
-    print(fine_save)
     if fine_save[0][0] < 0:
         cursor.execute("UPDATE user SET fine = 0 WHERE id = %s", (id,))
+        s['status'] = 1
     return redirect('/account')
 
 
@@ -174,6 +237,12 @@ def index(bid):
     if 'id' in s:
         id = s['id']
         cursor = mariadb_connection.cursor(buffered=True)
+        if s['status'] == 0:
+            return "<h2>仍有逾期未归还书籍或欠费</h2>"
+        cursor.execute("SELECT COUNT(*) FROM borrow_list WHERE u_id = %s", (id,))
+        rt = convert(cursor)
+        if rt[0][0] == s['amount']:
+            return "<h2>您借书已满，不能再借！</h2>"
         cursor.execute("SELECT * FROM book WHERE id = %s AND amount > borrow", (bid,))
         if cursor.rowcount == 0:
             return "<h2>该类书已借完</h2>"
@@ -219,10 +288,16 @@ def send_image(filename):
 @get('/login')
 def index():
     s = request.environ.get('beaker.session')
+    error = ""
     if 'username' in s:
-        return "<h2>You have login! "+ s['username'] + "</h2>"
+        error = "You have login!"
+        s['error'] = error
+        redirect('/account')
+    else:
+        if 'error' in s:
+            error = s['error']
 
-    return template('login')
+    return template('login', error=error)
 
 
 @post('/login')
@@ -230,16 +305,18 @@ def index():
     username = request.POST.getunicode('username')
     password = request.POST.getunicode('password')
     cursor = mariadb_connection.cursor(buffered=True)
+    s = request.environ.get('beaker.session')
     cursor.execute("SELECT * FROM library.user WHERE username = %s AND password = %s", (username, password))
     user_info = []
     if cursor.rowcount == 0:
-        print("no such user!")
-        return redirect('/')
+        print("用户名或者密码错误！")
+        s['error'] = "用户名或者密码错误！"
+        s.save()
+        return redirect('/login')
     else:
         for i in cursor:
             user_info.append(i)
         print(user_info)
-        s = request.environ.get('beaker.session')
         ts = time.time()
         timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
         s['timestamp'] = timestamp
@@ -247,6 +324,7 @@ def index():
         s['id'] = user_info[0][0]
         s['auth'] = user_info[0][3]
         s['status'] = user_info[0][5]
+        s['amount'] = user_info[0][7]
         s.save()
 
     return redirect('/account')
@@ -255,6 +333,10 @@ def index():
 @route('/account')
 def index():
     s = request.environ.get('beaker.session')
+    error = ""
+    if 'error' in s:
+        error = s['error']
+        s['error'] = ""
     if 'username' in s:
         id = s['id']
         
@@ -272,8 +354,9 @@ def index():
         if fine_save[0][0] < 0:
             # which means arrearage
             # stop him!
-            return """<h2>你欠费了！点击此处缴费<a href="/user/pay/""" + str(id) + """">缴费</a></h2>"""
-        cursor.execute("SELECT title, author, b_type, publish_date, press, press_addr, pages, hot, book.id, borrow_list.r_time "
+            # error = """你欠费了+""" + str(fine_save[0][0]) + """元！点击此处缴费<a href="/user/pay/""" + str(id) + """">缴费</a>"""
+            return """<h2>你欠费了+""" + str(fine_save[0][0]) + """元！点击此处缴费<a href="/user/pay/""" + str(id) + """">缴费</a></h2>"""
+        cursor.execute("SELECT title, author, b_type, publish_date, press, press_addr, pages, hot, book.id, borrow_list.r_time, borrow_list.id "
                        "FROM book, borrow_list WHERE book.id IN (SELECT b_id FROM library.borrow_list WHERE u_id = %s) "
                        "AND book.id = borrow_list.b_id;", (id, ))
         book_list = []
@@ -281,8 +364,9 @@ def index():
             book_list.append(i)
 
         for index in range(len(book_list)):
-            borrow_time = book_list[index][-1] - datetime.datetime.strptime(s['timestamp'], '%Y-%m-%d %H:%M:%S')
+            borrow_time = book_list[index][-2] - datetime.datetime.strptime(s['timestamp'], '%Y-%m-%d %H:%M:%S')
             print(borrow_time)
+            s['status'] = 1
             if borrow_time.days < 0:
                 ad_tuple = ("expired!",)
                 book_list[index] = book_list[index] + ad_tuple
@@ -297,7 +381,7 @@ def index():
             cursor.execute("UPDATE library.user SET status = 0 WHERE id = %s", (s['id'], ))
             mariadb_connection.commit()
 
-        return template('account', username=s['username'], b_list=book_list, id=s['id'])
+        return template('account', username=s['username'], b_list=book_list, id=s['id'], error=error)
 
     return redirect('/')
 
@@ -352,10 +436,40 @@ def index():
         rt_fin.append(list(i))
     print(rt_fin)
     cursor.close()
-
-
-
-    # return template('template', name=name)
     return template('sch_rst', b_list = rt_fin, sch_name = arg)
+
+
+@get('/management')
+def index():
+    s = request.environ.get('beaker.session')
+    if 'auth' not in s:
+        return redirect('/')
+    if s['auth'] == 0:
+        return redirect('/')
+    cursor = mariadb_connection.cursor(buffered = True)
+    cursor.execute("SELECT * FROM user")
+    # id | username | password | is_admin | login_time          | status | fine | b_amount | cancel
+    rt_lsit = convert(cursor)
+
+    for i in rt_lsit:
+        if i[8] == 0:
+            i[8] = "未注销"
+        else:
+            i[8] = "注销"
+        if i[3] == 0:
+            i[3] = "普通用户"
+        else:
+            i[3] = "管理员"
+    print(rt_lsit)
+    return template('user_list', b_list = rt_lsit)
+    # return template('sch_rst', b_list = rt_fin, sch_name = arg)
+
+
+def convert(cursor):
+    r_list = []
+    for i in cursor:
+        r_list.append(list(i))
+    return r_list
+
 
 run(host='0.0.0.0', port=8080, app=app)

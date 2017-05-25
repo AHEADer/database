@@ -31,7 +31,7 @@ username VARCHAR(20) UNIQUE,
 password VARCHAR(20),
 is_admin BIT,
 login_time TIMESTAMP,
-status INT,
+status INT DEFAULT 1,
   PRIMARY KEY (id)
 );
 
@@ -40,6 +40,8 @@ INSERT INTO user(username, password, is_admin, status) VALUES
   ('admin', 'admin', 1, 1);
 
 ALTER TABLE user add fine INT DEFAULT 0;
+ALTER TABLE user add b_amount INT DEFAULT 5;
+ALTER TABLE user add cancel BIT DEFAULT 0;
 
 CREATE TABLE borrow_list(
 id MEDIUMINT NOT NULL AUTO_INCREMENT,

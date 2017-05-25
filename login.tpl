@@ -52,6 +52,11 @@
 </head>
 
 <body>
+%if error != "":
+<script>
+    alert("{{error}}")
+</script>
+%end
     <div id="header">
 
         <form method="post" id="q" action="/s/search">
