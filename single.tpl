@@ -152,7 +152,7 @@
             <dd><a href="/browse/601" title="More from this category">{{item[8]}}</a></dd>
 
         <dt>剩余书本:</dt>
-            <dd><a href="javascript:void(0);" title="Files" onclick="if( filelist &lt; 1 ) { new Ajax.Updater('filelistContainer', '/ajax_details_filelist.php', { method: 'get', parameters: 'id=14645977' } ); filelist=1; }; toggleFilelist(); return false;">{{item[7] - item[11]}}</a></dd>
+            <dd>{{item[7] - item[11]}}</dd>
 
             <dt>出版社:</dt>
             <dd>{{item[4]}}</dd>
@@ -240,8 +240,8 @@
 			<a href="/login" title="Login">Login</a> | 
 			<a href="/register" title="Register">Register</a> | 
 			<a href="/account" title="Account">Account</a> |
-			<a href="/about" title="About">About</a> |
-			<a href="/blog" title="Blog">Blog</a>
+			<a href="/logout" title="Logout">Logout</a> |
+			<a href="/management" title="Management">Management</a>
 			<br />
 			<!--<a href="/contact" title="Contact us">Contact us</a> |-->
 			<a href="/policy" title="Usage policy">Usage policy</a> |

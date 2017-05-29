@@ -54,12 +54,12 @@
 <body>
     <div id="header">
 
-        <form method="post" id="q" action="/s/search">
+        <form method="get" id="q" action="/s/">
             <a href="/" class="img"><img src="/static/img/out.png" id="TPBlogo" alt="The Bay" /></a>
             <b><a href="/" title="Search Books">搜索</a></b>&nbsp;&nbsp;|&nbsp;
  <a href="/add" title="Music">添加</a>&nbsp;&nbsp;|&nbsp;
  <a href="/top" title="Top 100">Top 10</a>
-            <br /><input type="search" class="inputbox" title="Search" name="q" placeholder="Search here..." value="{{sch_name}}" /><input value="Search" type="submit" class="submitbutton"  /><br />
+            <br /><input type="search" class="inputbox" title="Search" name="q" placeholder="Search here..." value="" /><input value="Search" type="submit" class="submitbutton"  /><br />
             <label title="文学" accesskey="a"><input id="all" onclick="setAll();" type="checkbox" checked>所有</label>
             <label title="经济" accesskey="x"><input name="audio" id="audio" onclick="rmAll();" type="checkbox">文学</label>
             <label title="经济" accesskey="q"><input name="audio" id="audio" onclick="rmAll();" type="checkbox">经济</label>
@@ -133,20 +133,98 @@
             <input type="hidden" name="orderby" value="99" />
         </form>
     </div><!-- // div:header -->
+    <h2><span>详细信息</span>&nbsp;</h2>
 
-    <h2><span>Search results: {{sch_name}}</span>&nbsp;Displaying hits from 0 to 30 (approx 79 found)</h2>
 
-<div id="SearchResults"><div id="content">
-	
-    <div id="main-content">
+
+
+
+
+
+
+
+
+
+<div id="content">
+	<div id="main-content">
+
+
+
+
+
+
+
+    % for item in bki:
+<form name="modify" method="post" action="/user/modify/{{item[0]}}">
+
+<div id="detailsouterframe">
+<div id="response"></div>
+<div id="message"></div>
+<div id="detailsframe">
+<div id="title">
+<input name="title" value="{{item[1]}}" autofocus required style="width:300px">
+</div>
+
+    <div id='details'>
+        <dl class='col1'>
+            <dt>状态:</dt>
+            <dd><select name="status">
+                <option value="1">正常</option>
+                <option value="0">欠费</option>
+            </select></dd>
+
+        <dt>权限:</dt>
+            <dd><select name="is_admin">
+                <option value="0">普通用户</option>
+                <option value="1">管理员</option>
+            </select></dd>
+
+            <dt>注销:</dt>
+            <dd><select name="cancel">
+                <option value="1">未注销</option>
+                <option value="0">注销</option>
+            </select></dd>
+
+
+            <dt>余额:</dt>
+            <dd><input name="fine" value="{{item[6]}}" autofocus required style="width:100px"></dd>
+            <dt>借书上线:</dt>
+            <dd><input name="b_amount" value="{{item[7]}}" autofocus required style="width:100px"></dd>
+        </dl>
+    <br/>
+    <br/>
+    <div id="social">
+    </div>
+    <br /><br />    <div>
+
+        <br/>
+        <div class="download" style="text-align:center">
+            <input value="确定" type="submit" class="submitbutton" >
+            </div>
+            <div id="comments"></div>            </div>
+        </div>
+    </div>
+
+	</div>
+</form>
+% end
+
+
+<h3 align="center">借书清单</h3>
+
+    <div id="SearchResults">
 <table id="searchResult">
 	<thead id="tableHead">
 		<tr class="header">
-			<th><title="Order by Type">类型</a></th>
-			<th><div class="sortby"><a href="/search//0/1/200" title="Order by Name">书籍</a>
-			<th><abbr title="Seeders"><a href="/search//0/8/200" title="Order by Seeders">作者</a></abbr></th>
-			<th><abbr title="Leechers"><a href="/search//0/9/200" title="Order by Leechers">热度</a></abbr></th>
-            <th><abbr title="Borrow"><a href="" title="Order by Leechers"></a></abbr></th>
+			<th><a title="Order by Type">类型</a></th>
+			<th><div class="sortby"><a href="" title="Order by Name">书籍</a>
+			<th><abbr title="Seeders"><a href="" title="Order by Seeders">作者</a></abbr></th>
+			<th><abbr title="Leechers"><a href="" title="Order by Leechers">热度</a></abbr></th>
+            <th><abbr title="Renew"><a href="" title="Order by Leechers"></a></abbr></th>
+            <th><abbr title="Return"><a href="" title="Order by Leechers"></a></abbr></th>
+            <th><abbr title="expired"><a href="" title="Order by Leechers"></a></abbr></th>
+            <th><abbr title="expired"><a href="" title="Order by Leechers"></a></abbr></th>
+
 		</tr>
 	</thead>
 
@@ -165,20 +243,49 @@
 		</td>
 		<td align="right">{{item[1]}}</td>
 		<td align="right">{{item[7]}}</td>
-        <td align="right"><a href="/borrow/{{item[8]}}">借书</a></td>
+        <td align="right"><a href="/user/{{id}}/renew/{{item[10]}}">续借</a></td>
+        <td align="right"><a href="/user/{{id}}/return/{{item[10]}}">还书</a></td>
+        <td align="right"><a href="/user/{{id}}/destory/{{item[10]}}">损坏</a></td>
+        <td align="right">{{item[-1]}}</td>
 </tr>
 	% end
 
 </table>
+        </div>
+        </div><!-- //div:content -->
 </div>
 <div align="center">1&nbsp;<a href="/search//1/7/200/">2</a>&nbsp;<a href="/search//2/7/200/">3</a>&nbsp;<a href="/search//1/7/200/"><img src="/static/img/next.gif" border="0" alt="Next"/></a>&nbsp;
 </div>
 	</div></div></div><!-- //div:content -->
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	<div id="foot" style="text-align:center;margin-top:1em;">
 				<p>
-			<a href="/login" title="Login">Login</a> | 
-			<a href="/register" title="Register">Register</a> | 
+			<a href="/login" title="Login">Login</a> |
+			<a href="/register" title="Register">Register</a> |
 			<a href="/account" title="Account">Account</a> |
 			<a href="/logout" title="Logout">Logout</a> |
 			<a href="/management" title="Management">Management</a>
@@ -187,7 +294,7 @@
 			<a href="/policy" title="Usage policy">Usage policy</a> |
 			<a href="http://uj3wazyk5u4hnvtk.onion" title="TOR">TOR</a> |
 			<a href="/doodles" title="Doodles">Doodles</a> |
-			<a href="http://pirates-forum.org/" title="Forum" target="_blank">Forum</a> 
+			<a href="http://pirates-forum.org/" title="Forum" target="_blank">Forum</a>
 			<br />
 		</p>
 

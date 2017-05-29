@@ -4,6 +4,8 @@ import csv
 import time
 import datetime
 from beaker.middleware import SessionMiddleware
+from operator import itemgetter
+
 
 mariadb_connection = mariadb.connect(user='root', password='123',
 database='library')
@@ -130,28 +132,35 @@ def index(id, bid):
     s = request.environ.get('beaker.session')
     if 'id' in s:
         if str(s['id']) != id:
-            print("id not equal")
-            return redirect('/')
-        else:
-            # confirm identity
-            single = mariadb_connection.cursor(buffered=True)
-            single.execute("SELECT * FROM borrow_list WHERE u_id = %s AND id = %s", (id, bid))
-            if single.rowcount == 0:
-                # not exist!
+            if s['auth'] == 0:
+                print("id not equal")
                 return redirect('/')
-            borrow_info = []
-            for i in single:
-                borrow_info.append(i)
-            exp_time = borrow_info[0][-1] - datetime.datetime.strptime(s['timestamp'], '%Y-%m-%d %H:%M:%S')
-            if exp_time.days < 0:
-                # which means expired
-                print("expired!")
-                single.execute("UPDATE user SET fine = fine - 5 WHERE id = %s", (id, ))
-            single.execute("DELETE FROM borrow_list WHERE id = %s", (bid, ))
-            single.execute("UPDATE book SET borrow = borrow-1 WHERE id = %s", (borrow_info[0][1],))
-            mariadb_connection.commit()
-            print(borrow_info)
+
+        # confirm identity
+        single = mariadb_connection.cursor(buffered=True)
+        single.execute("SELECT * FROM borrow_list WHERE id = %s", (bid, ))
+        if single.rowcount == 0:
+            # not exist!
+            return redirect('/')
+        borrow_info = []
+        for i in single:
+            borrow_info.append(i)
+        exp_time = borrow_info[0][-1] - datetime.datetime.strptime(s['timestamp'], '%Y-%m-%d %H:%M:%S')
+        if exp_time.days < 0:
+            # which means expired
+            print("expired!")
+            single.execute("UPDATE user SET fine = fine - 5 WHERE id = %s", (id, ))
+        single.execute("DELETE FROM borrow_list WHERE id = %s", (bid, ))
+        single.execute("UPDATE book SET borrow = borrow-1 WHERE id = %s", (borrow_info[0][1],))
+        mariadb_connection.commit()
+        print(borrow_info)
+        if str(s['id']) != id and s['auth'] == 1:
+            return redirect('/user/' + str(id))
+        else:
             return redirect('/account')
+    else:
+        print("not login!")
+        return redirect('/')
 
 
 @get('/user/<id>/destory/<bid>')
@@ -191,30 +200,38 @@ def index(id, bid):
     s = request.environ.get('beaker.session')
     if 'id' in s:
         if str(s['id']) != id:
-            print("id not equal")
-            return redirect('/')
-        else:
-            # confirm identity
-            single = mariadb_connection.cursor(buffered=True)
-            single.execute("SELECT * FROM borrow_list WHERE u_id = %s AND id = %s", (id, bid))
-            if single.rowcount == 0:
-                # not exist!
+            if s['auth'] == 0:
+                print("id not equal")
                 return redirect('/')
-            borrow_info = []
-            for i in single:
-                borrow_info.append(i)
-            exp_time = borrow_info[0][-1] - datetime.datetime.strptime(s['timestamp'], '%Y-%m-%d %H:%M:%S')
-            if exp_time.days < 0:
-                # which means expired
-                return ("<h2>expired!Cannot renew!</h2>")
-            ts = time.time()
-            ts += 30*24*60*60
-            renew_time = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-            single.execute("UPDATE borrow_list SET r_time = %s WHERE id = %s", (renew_time, bid,))
-            single.execute("UPDATE book SET borrow = borrow-1 WHERE id = %s", (borrow_info[0][1],))
-            mariadb_connection.commit()
-            print(borrow_info)
+
+        # confirm identity
+        single = mariadb_connection.cursor(buffered=True)
+        single.execute("SELECT * FROM borrow_list WHERE id = %s", (bid, ))
+        if single.rowcount == 0:
+            # not exist!
+            print("not exist!")
+            return redirect('/')
+        borrow_info = []
+        for i in single:
+            borrow_info.append(i)
+        exp_time = borrow_info[0][-1] - datetime.datetime.strptime(s['timestamp'], '%Y-%m-%d %H:%M:%S')
+        if exp_time.days < 0:
+            # which means expired
+            return ("<h2>expired!Cannot renew!</h2>")
+        ts = time.time()
+        ts += 30*24*60*60
+        renew_time = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+        single.execute("UPDATE borrow_list SET r_time = %s WHERE id = %s", (renew_time, bid,))
+        single.execute("UPDATE book SET borrow = borrow-1 WHERE id = %s", (borrow_info[0][1],))
+        mariadb_connection.commit()
+        print(borrow_info)
+        if str(s['id']) != id and s['auth'] == 1:
+            return redirect('/user/'+str(id))
+        else:
             return redirect('/account')
+    else:
+        print("not login!")
+        return redirect('/')
 
 
 @get('/user/pay/<id>')
@@ -386,7 +403,6 @@ def index():
     return redirect('/')
 
 
-
 @post('/s/search')
 def index():
     request.POST.decode('utf-8')
@@ -406,35 +422,35 @@ def index():
     print(arg)
 
     # print(str(arg, encoding='utf-8'))
-    ratio = 73+len(arg)/2
-
-    cursor.execute("SELECT title, author, b_type, publish_date, press, press_addr, pages, hot, id FROM"
-                   " library.book WHERE levenshtein_ratio(title, %s) >= %s", (arg, ratio))
+    ratio = 72+len(arg)/2
+    if ratio > 78:
+        ratio = 78
+    sql = "SELECT title, author, b_type, publish_date, press, press_addr, pages, hot, id, levenshtein_ratio(title, %s)" \
+          "FROM library.book WHERE levenshtein_ratio(title, %s) >= %s"
+    sql_args = (arg, arg, ratio)
+    cursor.execute(sql, sql_args)
 
     for i in cursor:
         rt_lsit.append(i)
 
-    cursor.execute("SELECT title, author, b_type, publish_date, press, press_addr, pages, hot, id FROM"
-                   " library.book WHERE levenshtein_ratio(author, %s) >= %s", (arg, ratio))
+    cursor.execute("SELECT title, author, b_type, publish_date, press, press_addr, pages, hot, id, levenshtein_ratio(author, %s) FROM"
+                   " library.book WHERE levenshtein_ratio(author, %s) >= %s", sql_args)
     for i in cursor:
         rt_lsit.append(i)
 
-    cursor.execute("SELECT title, author, b_type, publish_date, press, press_addr, pages, hot, id FROM"
-                   " library.book WHERE levenshtein_ratio(press, %s) >= %s", (arg, ratio))
+    cursor.execute("SELECT title, author, b_type, publish_date, press, press_addr, pages, hot, id, levenshtein_ratio(press, %s) FROM"
+                   " library.book WHERE levenshtein_ratio(press, %s) >= %s", sql_args)
     for i in cursor:
         rt_lsit.append(i)
 
-    cursor.execute("SELECT title, author, b_type, publish_date, press, press_addr, pages, hot, id FROM"
-                   " library.book WHERE levenshtein_ratio(b_type, %s) >= %s", (arg, 85))
+    cursor.execute("SELECT title, author, b_type, publish_date, press, press_addr, pages, hot, id, levenshtein_ratio(b_type, %s) FROM"
+                   " library.book WHERE levenshtein_ratio(b_type, %s) >= %s", sql_args)
     for i in cursor:
         rt_lsit.append(i)
     rt_lsit = set(rt_lsit)
     rt_lsit = list(rt_lsit)
-
-    rt_fin = []
-    for i in rt_lsit:
-        rt_fin.append(list(i))
-    print(rt_fin)
+    rt_lsit.sort(key=itemgetter(-1), reverse=True)
+    rt_fin = convert(rt_lsit)
     cursor.close()
     return template('sch_rst', b_list = rt_fin, sch_name = arg)
 
@@ -463,6 +479,64 @@ def index():
     print(rt_lsit)
     return template('user_list', b_list = rt_lsit)
     # return template('sch_rst', b_list = rt_fin, sch_name = arg)
+
+
+@get('/user/<id>')
+def index(id):
+    s = request.environ.get('beaker.session')
+    if 'auth' not in s:
+        return redirect('/')
+    if s['auth'] == 0:
+        return redirect('/')
+    cursor = mariadb_connection.cursor(buffered=True)
+    cursor.execute("SELECT * FROM user WHERE id = %s", (id,))
+    rt_list = convert(cursor)
+    cursor.execute(
+        "SELECT title, author, b_type, publish_date, press, press_addr, pages, hot, book.id, borrow_list.r_time, borrow_list.id "
+        "FROM book, borrow_list WHERE book.id IN (SELECT b_id FROM library.borrow_list WHERE u_id = %s) "
+        "AND book.id = borrow_list.b_id;", (id,))
+    book_list = convert(cursor)
+    for index in range(len(book_list)):
+        borrow_time = book_list[index][-2] - datetime.datetime.strptime(s['timestamp'], '%Y-%m-%d %H:%M:%S')
+        print(borrow_time)
+        s['status'] = 1
+        if borrow_time.days < 0:
+            ad_tuple = ("expired!",)
+            book_list[index] = book_list[index] + ad_tuple
+            s['status'] = 0
+        else:
+            ad_tuple = ["离过期还有" + str(borrow_time.days) + "天" + str(borrow_time.seconds // 3600) + "小时"
+                        + str((borrow_time.seconds // 60) % 60) + "分钟",]
+            book_list[index] = book_list[index] + ad_tuple
+
+    return template('ch_user',bki=rt_list, b_list = book_list,id=id)
+
+
+@post('/user/modify/<id>')
+def index(id):
+    s = request.environ.get('beaker.session')
+    if 'auth' not in s:
+        return redirect('/')
+    if s['auth'] == 0:
+        return redirect('/')
+    status = request.POST.getunicode('status')
+    is_admin = request.POST.getunicode('is_admin')
+    cancel = request.POST.getunicode('cancel')
+    fine = request.POST.getunicode('fine')
+    b_amount = request.POST.getunicode('b_amount')
+    cursor = mariadb_connection.cursor(buffered=True)
+    sql = "UPDATE user SET status=%s, is_admin=%s, cancel=%s, fine=%s, b_amount=%s WHERE id=%s"
+    arg = (status, is_admin, cancel, fine, b_amount, id)
+    cursor.execute(sql, arg)
+    mariadb_connection.commit()
+    return redirect("/user/"+str(id))
+
+
+@route('/logout')
+def index():
+    s = request.environ.get('beaker.session')
+    s.delete()
+    return redirect('/')
 
 
 def convert(cursor):

@@ -246,8 +246,8 @@
 			<a href="/login" title="Login">Login</a> | 
 			<a href="/register" title="Register">Register</a> | 
 			<a href="/account" title="Account">Account</a> |
-			<a href="/about" title="About">About</a> |
-			<a href="/blog" title="Blog">Blog</a>
+			<a href="/logout" title="Logout">Logout</a> |
+			<a href="/management" title="Management">Management</a>
 			<br />
 			<!--<a href="/contact" title="Contact us">Contact us</a> |-->
 			<a href="/policy" title="Usage policy">Usage policy</a> |
