@@ -42,6 +42,7 @@ INSERT INTO user(username, password, is_admin, status) VALUES
 ALTER TABLE user add fine INT DEFAULT 0;
 ALTER TABLE user add b_amount INT DEFAULT 5;
 ALTER TABLE user add cancel BIT DEFAULT 0;
+ALTER TABLE borrow_list add uniqueid MEDIUMINT NOT NULL;
 
 CREATE TABLE borrow_list(
 id MEDIUMINT NOT NULL AUTO_INCREMENT,
@@ -52,6 +53,12 @@ r_time TIMESTAMP,
   PRIMARY KEY (id)
 );
 
+CREATE TABLE ubooks(
+id MEDIUMINT NOT NULL AUTO_INCREMENT,
+b_id MEDIUMINT NOT NULL ,
+borrow BOOLEAN DEFAULT FALSE,
+  PRIMARY KEY (id)
+);
 
 INSERT INTO borrow_list(b_id, u_id, b_time, r_time) VALUES
   (10, 1, '2017-05-01', '2017-5-23'),

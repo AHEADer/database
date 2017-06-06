@@ -267,7 +267,16 @@ def index(bid):
         b_time = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
         ts = ts + 30 * 24 * 60 * 60
         r_time = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-        cursor.execute("INSERT INTO borrow_list (b_id, u_id, b_time, r_time) VALUES (%s, %s, %s, %s)", (bid, id, b_time, r_time, ))
+        # find unique_id
+        cursor.execute("SELECT id FROM ubooks WHERE b_id=%s AND borrow=0 LIMIT 1", (bid,))
+        print("borrow a book!")
+        unique_id = 0
+        for i in cursor:
+            unique_id = i[0]
+        print(unique_id)
+        cursor.execute("INSERT INTO borrow_list (b_id, u_id, uniqueid, b_time, r_time) \
+        VALUES (%s, %s, %s, %s, %s)", (bid, id, unique_id, b_time, r_time, ))
+        cursor.execute("UPDATE ubooks SET borrow = 1 WHERE id = %s", (unique_id, ))
         cursor.execute("UPDATE book SET borrow = borrow+1 WHERE id = %s", (bid, ))
         mariadb_connection.commit()
         return redirect('/account')
@@ -327,9 +336,10 @@ def index():
     user_info = []
     if cursor.rowcount == 0:
         print("用户名、密码错误或其他错误！")
-        s['error'] = "用户名或者密码错误！"
+        s['error'] = "用户名、密码错误或其他错误！"
         s.save()
-        return redirect('/login')
+        perror = "用户名、密码错误或其他错误！"
+        return template('login', error=perror)
     else:
         for i in cursor:
             user_info.append(i)
@@ -342,6 +352,7 @@ def index():
         s['auth'] = user_info[0][3]
         s['status'] = user_info[0][5]
         s['amount'] = user_info[0][7]
+        s['error'] = ""
         s.save()
 
     return redirect('/account')
