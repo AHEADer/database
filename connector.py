@@ -323,10 +323,10 @@ def index():
     password = request.POST.getunicode('password')
     cursor = mariadb_connection.cursor(buffered=True)
     s = request.environ.get('beaker.session')
-    cursor.execute("SELECT * FROM library.user WHERE username = %s AND password = %s", (username, password))
+    cursor.execute("SELECT * FROM library.user WHERE username = %s AND password = %s AND cancel!=1", (username, password))
     user_info = []
     if cursor.rowcount == 0:
-        print("用户名或者密码错误！")
+        print("用户名、密码错误或其他错误！")
         s['error'] = "用户名或者密码错误！"
         s.save()
         return redirect('/login')
@@ -372,7 +372,7 @@ def index():
             # which means arrearage
             # stop him!
             # error = """你欠费了+""" + str(fine_save[0][0]) + """元！点击此处缴费<a href="/user/pay/""" + str(id) + """">缴费</a>"""
-            return """<h2>你欠费了+""" + str(fine_save[0][0]) + """元！点击此处缴费<a href="/user/pay/""" + str(id) + """">缴费</a></h2>"""
+            return """<h2>你欠费了!当前费用""" + str(fine_save[0][0]) + """元！点击此处缴费<a href="/user/pay/""" + str(id) + """">缴费</a></h2>"""
         cursor.execute("SELECT title, author, b_type, publish_date, press, press_addr, pages, hot, book.id, borrow_list.r_time, borrow_list.id "
                        "FROM book, borrow_list WHERE book.id IN (SELECT b_id FROM library.borrow_list WHERE u_id = %s) "
                        "AND book.id = borrow_list.b_id;", (id, ))
@@ -447,13 +447,31 @@ def index():
                    " library.book WHERE levenshtein_ratio(b_type, %s) >= %s", sql_args)
     for i in cursor:
         rt_lsit.append(i)
-    rt_lsit = set(rt_lsit)
+    
     rt_lsit = list(rt_lsit)
     rt_lsit.sort(key=itemgetter(-1), reverse=True)
+    print(rt_lsit)
     rt_fin = convert(rt_lsit)
+    hh = []
+    for i in rt_fin:
+        i.pop()
+        hh.append(tuple(i))
+
+    rt_fin = list(set(hh))
+    rt_fin.sort(key = hh.index)
+    print(rt_fin)
     cursor.close()
     return template('sch_rst', b_list = rt_fin, sch_name = arg)
 
+
+@get('/top')
+def index():
+    cursor = mariadb_connection.cursor(buffered=True)
+    cursor.execute("SELECT title, author, b_type, publish_date, press, press_addr, pages, hot, id FROM book ORDER BY hot DESC LIMIT 10"
+                   , ())
+    rt_fin = convert(cursor)
+    arg = "Top 10"
+    return template('sch_rst', b_list = rt_fin, sch_name = arg)    
 
 @get('/management')
 def index():
@@ -524,11 +542,19 @@ def index(id):
     cancel = request.POST.getunicode('cancel')
     fine = request.POST.getunicode('fine')
     b_amount = request.POST.getunicode('b_amount')
-    cursor = mariadb_connection.cursor(buffered=True)
-    sql = "UPDATE user SET status=%s, is_admin=%s, cancel=%s, fine=%s, b_amount=%s WHERE id=%s"
     arg = (status, is_admin, cancel, fine, b_amount, id)
-    cursor.execute(sql, arg)
+    print(arg)
+    cursor = mariadb_connection.cursor(buffered=True)
+
+    sql = "UPDATE user SET status="+status+", is_admin="+is_admin+ \
+    ", cancel="+cancel+", fine="+fine+", b_amount="+b_amount+" WHERE id="+id
+    
+    cursor.execute(sql, ())
     mariadb_connection.commit()
+    if is_admin == "0" and id == s['id']:
+        s.delete()
+        return redirect("/")
+        
     return redirect("/user/"+str(id))
 
 

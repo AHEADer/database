@@ -181,8 +181,8 @@
 
             <dt>注销:</dt>
             <dd><select name="cancel">
-                <option value="1">未注销</option>
-                <option value="0">注销</option>
+                <option value="0">未注销</option>
+                <option value="1">注销</option>
             </select></dd>
 
 
