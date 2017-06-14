@@ -54,7 +54,7 @@
 <body>
     <div id="header">
 
-        <form method="post" id="q" action="/s/search">
+        <form method="get" id="q" action="/s/">
             <a href="/" class="img"><img src="/static/img/out.png" id="TPBlogo" alt="The Bay" /></a>
             <b><a href="/" title="Search Books">搜索</a></b>&nbsp;&nbsp;|&nbsp;
  <a href="/add" title="Music">添加</a>&nbsp;&nbsp;|&nbsp;
@@ -133,89 +133,108 @@
             <input type="hidden" name="orderby" value="99" />
         </form>
     </div><!-- // div:header -->
-    <h2><span>详细信息</span>&nbsp;</h2>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-<form name="modify" method="post" action="/add">
+    <h2><span>添加用户</span>&nbsp;</h2>
+
+
+
+
+
+
+
+
+
+
+
 <div id="content">
 	<div id="main-content">
-		<div>
+
+
+
+
+
+
+
+<form name="modify" method="post" action="/user/add">
+
 <div id="detailsouterframe">
 <div id="response"></div>
 <div id="message"></div>
 <div id="detailsframe">
 <div id="title">
-<input name="title" placeholder="书名" autofocus required style="width:300px">
+<input name="title" placeholder="input user's name" autofocus required style="width:300px">
 </div>
 
     <div id='details'>
         <dl class='col1'>
-            <dt>类型:</dt>
-            <dd><input name="b_type" placeholder="类型" autofocus required style="width:100px"></dd>
+            <dt>状态:</dt>
+            <dd><select name="status">
+                <option value="1">正常</option>
+                <option value="0">欠费</option>
+            </select></dd>
 
-        <dt>书本总量:</dt>
-            <dd><input name="amount" placeholder="书本数量" autofocus required style="width:100px"></a></dd>
+        <dt>权限:</dt>
+            <dd><select name="is_admin">
+                <option value="0">普通用户</option>
+                <option value="1">管理员</option>
+            </select></dd>
 
-            <dt>出版社:</dt>
-            <dd><input name="press" placeholder="出版社" autofocus required style="width:100px"></dd>
+            <dt>注销:</dt>
+            <dd><select name="cancel">
+                <option value="0">未注销</option>
+                <option value="1">注销</option>
+            </select></dd>
 
 
-            <dt>出版社地址:</dt>
-            <dd><input name="press_addr" placeholder="出版社地址" autofocus required style="width:100px"></dd>
+            <dt>余额:</dt>
+            <dd><input name="fine" value="" autofocus required style="width:100px"></dd>
+            <dt>借书上限:</dt>
+            <dd><input name="b_amount" value="" autofocus required style="width:100px"></dd>
+            <dt>密码:</dt>
+            <dd><input name="password" type="password" value="" autofocus required style="width:100px"></dd>
         </dl>
-        <dl class='col2'>
-            <dt>出版时间:</dt>
-            <dd><input name="publish_date" placeholder="出版时间" autofocus required style="width:150px"></dd>
-            <dt>作者:</dt>
-            <dd><input name="author" placeholder="作者" autofocus required style="width:150px"></dd>
-            <dt>热度:</dt>
-            <dd><input name="hot" placeholder="热度" autofocus required style="width:150px"></dd>
-
-            <dt>页数:</dt>
-            <dd><input name="pages" placeholder="页数" autofocus required style="width:150px"></dd>
-
-            <dt>Comments</dt>
-            <dd><span id='NumComments'>0</span>
-                &nbsp;            </dd>
-
-            <br />
-            <dt>Info Hash:</dt><dd></dd>
-            FC4967B830B8285503AE6D93BA8BE4C3179E354F        </dl>
     <br/>
     <br/>
     <div id="social">
     </div>
     <br /><br />    <div>
-        <div class="nfo">
-        <textarea name="about" placeholder="简介" autofocus required style="height:120px; width:595px"></textarea>
-        </div>
+
         <br/>
         <div class="download" style="text-align:center">
             <input value="确定" type="submit" class="submitbutton" >
             </div>
             <div id="comments"></div>            </div>
         </div>
-</div><!-- //div:content -->
+    </div>
+
+	</div>
 </form>
 
 
+<h3 align="center">借书清单</h3>
+
+    <div id="SearchResults">
+<table id="searchResult">
+	<thead id="tableHead">
+		<tr class="header">
+			<th><a title="Order by Type">类型</a></th>
+			<th><div class="sortby"><a href="" title="Order by Name">书籍</a>
+			<th><abbr title="Seeders"><a href="" title="Order by Seeders">作者</a></abbr></th>
+			<th><abbr title="Leechers"><a href="" title="Order by Leechers">热度</a></abbr></th>
+            <th><abbr title="Renew"><a href="" title="Order by Leechers"></a></abbr></th>
+            <th><abbr title="Return"><a href="" title="Order by Leechers"></a></abbr></th>
+            <th><abbr title="expired"><a href="" title="Order by Leechers"></a></abbr></th>
+            <th><abbr title="expired"><a href="" title="Order by Leechers"></a></abbr></th>
+
+		</tr>
+	</thead>
+
+</table>
+        </div>
+        </div><!-- //div:content -->
+</div>
+<div align="center">1&nbsp;<a href="/search//1/7/200/">2</a>&nbsp;<a href="/search//2/7/200/">3</a>&nbsp;<a href="/search//1/7/200/"><img src="/static/img/next.gif" border="0" alt="Next"/></a>&nbsp;
+</div>
+	</div></div></div><!-- //div:content -->
 
 
 
@@ -243,8 +262,8 @@
 
 	<div id="foot" style="text-align:center;margin-top:1em;">
 				<p>
-			<a href="/login" title="Login">Login</a> | 
-			<a href="/register" title="Register">Register</a> | 
+			<a href="/login" title="Login">Login</a> |
+			<a href="/register" title="Register">Register</a> |
 			<a href="/account" title="Account">Account</a> |
 			<a href="/logout" title="Logout">Logout</a> |
 			<a href="/management" title="Management">Management</a>
@@ -253,11 +272,9 @@
 			<a href="/returnbyid" title="Returnbyid">Return books</a> |
 			<a href="http://uj3wazyk5u4hnvtk.onion" title="TOR">TOR</a> |
 			<a href="/doodles" title="Doodles">Doodles</a> |
-			<a href="http://pirates-forum.org/" title="Forum" target="_blank">Forum</a> 
+			<a href="http://pirates-forum.org/" title="Forum" target="_blank">Forum</a>
 			<br />
 		</p>
-
-<br /><a href="http://bitcoin.org" target="_NEW">BitCoin</a>: <b><a href="bitcoin:129TQVAroeehD9fZpzK51NdZGQT4TqifbG">129TQVAroeehD9fZpzK51NdZGQT4TqifbG</a></b><br /><br />
 
 		<div id="fbanners">
 			<a href="/rss" class="rss" title="RSS"><img src="/static/img/rss_small.gif" alt="RSS" /></a>

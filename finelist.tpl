@@ -59,7 +59,7 @@
             <b><a href="/" title="Search Books">搜索</a></b>&nbsp;&nbsp;|&nbsp;
  <a href="/add" title="Music">添加</a>&nbsp;&nbsp;|&nbsp;
  <a href="/top" title="Top 100">Top 10</a>
-            <br /><input type="search" class="inputbox" title="Search" name="q" placeholder="Search here..." value="" /><input value="Search" type="submit" class="submitbutton"  /><br />
+            <br /><input type="search" class="inputbox" title="Search" name="q" placeholder="Search here..." value="{{sch_name}}" /><input value="Search" type="submit" class="submitbutton"  /><br />
             <label title="文学" accesskey="a"><input id="all" onclick="setAll();" type="checkbox" checked>所有</label>
             <label title="经济" accesskey="x"><input name="audio" id="audio" onclick="rmAll();" type="checkbox">文学</label>
             <label title="经济" accesskey="q"><input name="audio" id="audio" onclick="rmAll();" type="checkbox">经济</label>
@@ -133,113 +133,42 @@
             <input type="hidden" name="orderby" value="99" />
         </form>
     </div><!-- // div:header -->
-    <h2><span>详细信息</span>&nbsp;</h2>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-<form name="modify" method="post" action="/add">
-<div id="content">
-	<div id="main-content">
-		<div>
-<div id="detailsouterframe">
-<div id="response"></div>
-<div id="message"></div>
-<div id="detailsframe">
-<div id="title">
-<input name="title" placeholder="书名" autofocus required style="width:300px">
+
+    <h2><span>Search results: {{sch_name}}</span>&nbsp;</h2>
+
+<div id="SearchResults"><div id="content">
+	
+    <div id="main-content">
+<table id="searchResult">
+	<thead id="tableHead">
+		<tr class="header">
+			<th><title="Order by Type">罚单号</a></th>
+			<th><div class="sortby"><a href="/search//0/1/200" title="Order by Name">原因</a>
+			<th><abbr title="Seeders"><a href="/search//0/8/200" title="Order by Seeders">时间</a></abbr></th>
+			<th><abbr title="Leechers"><a href="/search//0/9/200" title="Order by Leechers">金额</a></abbr></th>
+		</tr>
+	</thead>
+
+	% for item in b_list:
+    <tr>
+		<td class="vertTh">
+			<center>
+				{{item[0]}}<br />
+			</center>
+		</td>
+		<td>
+            <center>
+                {{item[1]}}<br />
+            </center>
+		</td>
+		<td align="right">{{item[2]}}</td>
+		<td align="right">{{item[3]}}</td>
+</tr>
+	% end
+
+</table>
 </div>
-
-    <div id='details'>
-        <dl class='col1'>
-            <dt>类型:</dt>
-            <dd><input name="b_type" placeholder="类型" autofocus required style="width:100px"></dd>
-
-        <dt>书本总量:</dt>
-            <dd><input name="amount" placeholder="书本数量" autofocus required style="width:100px"></a></dd>
-
-            <dt>出版社:</dt>
-            <dd><input name="press" placeholder="出版社" autofocus required style="width:100px"></dd>
-
-
-            <dt>出版社地址:</dt>
-            <dd><input name="press_addr" placeholder="出版社地址" autofocus required style="width:100px"></dd>
-        </dl>
-        <dl class='col2'>
-            <dt>出版时间:</dt>
-            <dd><input name="publish_date" placeholder="出版时间" autofocus required style="width:150px"></dd>
-            <dt>作者:</dt>
-            <dd><input name="author" placeholder="作者" autofocus required style="width:150px"></dd>
-            <dt>热度:</dt>
-            <dd><input name="hot" placeholder="热度" autofocus required style="width:150px"></dd>
-
-            <dt>页数:</dt>
-            <dd><input name="pages" placeholder="页数" autofocus required style="width:150px"></dd>
-
-            <dt>Comments</dt>
-            <dd><span id='NumComments'>0</span>
-                &nbsp;            </dd>
-
-            <br />
-            <dt>Info Hash:</dt><dd></dd>
-            FC4967B830B8285503AE6D93BA8BE4C3179E354F        </dl>
-    <br/>
-    <br/>
-    <div id="social">
-    </div>
-    <br /><br />    <div>
-        <div class="nfo">
-        <textarea name="about" placeholder="简介" autofocus required style="height:120px; width:595px"></textarea>
-        </div>
-        <br/>
-        <div class="download" style="text-align:center">
-            <input value="确定" type="submit" class="submitbutton" >
-            </div>
-            <div id="comments"></div>            </div>
-        </div>
-</div><!-- //div:content -->
-</form>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	</div></div></div><!-- //div:content -->
 
 	<div id="foot" style="text-align:center;margin-top:1em;">
 				<p>
@@ -256,8 +185,6 @@
 			<a href="http://pirates-forum.org/" title="Forum" target="_blank">Forum</a> 
 			<br />
 		</p>
-
-<br /><a href="http://bitcoin.org" target="_NEW">BitCoin</a>: <b><a href="bitcoin:129TQVAroeehD9fZpzK51NdZGQT4TqifbG">129TQVAroeehD9fZpzK51NdZGQT4TqifbG</a></b><br /><br />
 
 		<div id="fbanners">
 			<a href="/rss" class="rss" title="RSS"><img src="/static/img/rss_small.gif" alt="RSS" /></a>

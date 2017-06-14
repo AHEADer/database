@@ -101,34 +101,29 @@
 
 </head>
 <body>
+%if info != "":
+<script>
+    alert("{{info}}")
+</script>
+%end
 <div id="fp">
     <h1><a href="/blog" title="The Bay"><span>The Bay</span></a></h1>
     <nav id="navlinks">
-        <strong>Search Books</strong>
+        <strong>还书入口</strong>
         <a href="/top" title="Top 10">Top 10</a>
         <a href="/add" title="">添加</a>
     </nav>
-    <form name="q" method="post" action="/s/search">
+    <form name="q" method="post" action="/returnbyid">
         <p id="inp">
-            <input name="q" type="search" title="Search" placeholder="Search" autofocus required >
+            <input name="q" type="search" title="Search" placeholder="输入书号" autofocus required >
             <span>
                 <a href="/settings" title="Preferences">Preferences</a>
                 <a href="/language" title="Languages">Languages</a>
             </span>
         </p>
-        <p id="chb" name="chb">
-            <label title="文学" accesskey="a"><input id="all" onclick="setAll();" type="checkbox" value = "所有" checked>所有</label>
-            <label title="经济" accesskey="x"><input name="audio" id="audio" onclick="rmAll();" type="checkbox">文学</label>
-            <label title="经济" accesskey="q"><input name="audio" id="audio" onclick="rmAll();" type="checkbox">经济</label>
-            <label title="艺术" accesskey="w"><input name="video" id="video" onclick="rmAll();" type="checkbox">艺术</label>
-            <label title="自然科学" accesskey="e"><input name="apps" id="apps" onclick="rmAll();" type="checkbox">自然科学</label>
-            <label title="哲学" accesskey="r"><input name="games" id="games" onclick="rmAll();" type="checkbox">哲学</label>
-            <label title="军事政治" accesskey="t"><input name="porn" id="porn" onclick="rmAll();" type="checkbox">军事政治</label>
-            <label title="其他" accesskey="y"><input name="other" id="other" onclick="rmAll();" type="checkbox">其他</label>
-        </p>
         <p id="subm">
-            <input type="submit" title="Search" value="Search" accesskey="s"  >
-            <input type="submit" title="I'm Feeling Lucky" name="lucky" value="I'm Feeling Lucky"  >
+            <input type="submit" name="return" value="还书" accesskey="s"  >
+            <input type="submit" title="I'm Feeling Lucky" name="destory" value="损坏"  >
             <input type="hidden" name="page" value="0">
             <input type="hidden" name="orderby" value="99">
         </p>

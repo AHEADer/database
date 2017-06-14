@@ -167,7 +167,7 @@
 			<a href="/management" title="Management">Management</a>
 			<br />
 			<!--<a href="/contact" title="Contact us">Contact us</a> |-->
-			<a href="/policy" title="Usage policy">Usage policy</a> |
+			<a href="/returnbyid" title="Returnbyid">Return books</a> |
 			<a href="http://uj3wazyk5u4hnvtk.onion" title="TOR">TOR</a> |
 			<a href="/doodles" title="Doodles">Doodles</a> |
 			<a href="http://pirates-forum.org/" title="Forum" target="_blank">Forum</a> 

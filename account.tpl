@@ -151,6 +151,7 @@
 			<th><div class="sortby"><a href="" title="Order by Name">书籍</a>
 			<th><abbr title="Seeders"><a href="" title="Order by Seeders">作者</a></abbr></th>
 			<th><abbr title="Leechers"><a href="" title="Order by Leechers">热度</a></abbr></th>
+            <th><abbr title="Renew">书号</abbr></th>
             <th><abbr title="Renew"><a href="" title="Order by Leechers"></a></abbr></th>
             <th><abbr title="Return"><a href="" title="Order by Leechers"></a></abbr></th>
             <th><abbr title="expired"><a href="" title="Order by Leechers"></a></abbr></th>
@@ -174,6 +175,7 @@
 		</td>
 		<td align="right">{{item[1]}}</td>
 		<td align="right">{{item[7]}}</td>
+        <td align="right">{{item[-2]}}</td>
         <td align="right"><a href="/user/{{id}}/renew/{{item[-2]}}">续借</a></td>
         <td align="right"><a href="/user/{{id}}/return/{{item[-2]}}">还书</a></td>
         <td align="right"><a href="/user/{{id}}/destory/{{item[-2]}}">损坏</a></td>
@@ -196,7 +198,7 @@
 			<a href="/management" title="Management">Management</a>
 			<br />
 			<!--<a href="/contact" title="Contact us">Contact us</a> |-->
-			<a href="/policy" title="Usage policy">Usage policy</a> |
+			<a href="/returnbyid" title="Returnbyid">Return books</a> |
 			<a href="http://uj3wazyk5u4hnvtk.onion" title="TOR">TOR</a> |
 			<a href="/doodles" title="Doodles">Doodles</a> |
 			<a href="http://pirates-forum.org/" title="Forum" target="_blank">Forum</a>

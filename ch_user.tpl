@@ -188,7 +188,7 @@
 
             <dt>余额:</dt>
             <dd><input name="fine" value="{{item[6]}}" autofocus required style="width:100px"></dd>
-            <dt>借书上线:</dt>
+            <dt>借书上限:</dt>
             <dd><input name="b_amount" value="{{item[7]}}" autofocus required style="width:100px"></dd>
         </dl>
     <br/>
@@ -291,7 +291,7 @@
 			<a href="/management" title="Management">Management</a>
 			<br />
 			<!--<a href="/contact" title="Contact us">Contact us</a> |-->
-			<a href="/policy" title="Usage policy">Usage policy</a> |
+			<a href="/returnbyid" title="Returnbyid">Return books</a> |
 			<a href="http://uj3wazyk5u4hnvtk.onion" title="TOR">TOR</a> |
 			<a href="/doodles" title="Doodles">Doodles</a> |
 			<a href="http://pirates-forum.org/" title="Forum" target="_blank">Forum</a>
