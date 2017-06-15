@@ -99,7 +99,11 @@ def index():
     
     try:
         single = mariadb_connection.cursor(buffered=True)
+        single.execute("SELECT MAX(id) FROM book", ())
+        num = convert(single)
         single.execute(update, args)
+        for j in range(int(amount)):
+            single.execute("INSERT INTO ubooks (b_id) VALUES (%s)", (num[0][0]+1,))
         mariadb_connection.commit()
     except mariadb.Error as err:
         return "<h2>Oop! Sth wrong!</h2>"
@@ -223,8 +227,11 @@ def index(id, bid):
         ts = time.time()
         ts += 30*24*60*60
         renew_time = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+        single.execute("SELECT * FROM finelist WHERE u_id = %s AND paid = 0",(id,))
+        if single.rowcount > 0:
+            return redirect('/account')
         single.execute("UPDATE borrow_list SET r_time = %s WHERE uniqueid = %s", (renew_time, bid,))
-        single.execute("UPDATE book SET borrow = borrow-1 WHERE id = %s", (borrow_info[0][1],))
+        # single.execute("UPDATE book SET borrow = borrow-1 WHERE id = %s", (borrow_info[0][1],))
         mariadb_connection.commit()
         print(borrow_info)
         if str(s['id']) != id and s['auth'] == 1:
